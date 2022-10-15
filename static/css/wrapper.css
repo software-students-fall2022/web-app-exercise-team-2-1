@@ -28,6 +28,10 @@ footer {
   list-style-type: none;
 }
 
+main {
+  margin-top: 12rem;
+}
+
 /* Layout Template */
 nav {
   padding: 0.5rem 0;
