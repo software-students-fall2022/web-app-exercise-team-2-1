@@ -6,7 +6,7 @@ box-sizing: border-box;
 
 body {
 background: #d7bfdc;
-font-family: 'Rubik', sans-serif;
+font-family: "Abel", sans-serif;
 }
 
 .login {
@@ -38,7 +38,7 @@ padding: 12px 5px;
 .login .input-field input {
 font-size: 16px;
 display: block;
-font-family: 'Rubik', sans-serif;
+font-family: 'Abel', sans-serif;
 width: 100%;
 padding: 10px 1px;
 border: 0;
@@ -62,7 +62,7 @@ display: flex;
 width: 100%;
 border: none;
 padding: 18px;
-font-family: 'Rubik', sans-serif;
+font-family: 'Abel', sans-serif;
 /* cursor: pointer; */
 text-transform: uppercase;
 background: #e8e9ec;
