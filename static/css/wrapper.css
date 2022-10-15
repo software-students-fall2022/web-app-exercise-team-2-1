@@ -28,6 +28,10 @@ footer {
   list-style-type: none;
 }
 
+main {
+  margin-top: 12rem;
+}
+
 /* Layout Template */
 nav {
   padding: 0.5rem 0;
@@ -41,7 +45,7 @@ nav {
   box-shadow: 0 0 2rem rgb(0 0 0 / 10%);
 }
 
-.nav-logo, .nav-logo:hover, .nav-logo:active, .bottom-nav-icon, .bottom-nav-icon:hover, .bottom-nav-icon:active {
+.nav-link, .nav-link:hover, .nav-link:active, .bottom-nav-icon, .bottom-nav-icon:hover, .bottom-nav-icon:active {
   color: #000;
   text-decoration: none;
 }
