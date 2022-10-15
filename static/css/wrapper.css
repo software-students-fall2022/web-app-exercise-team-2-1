@@ -1,14 +1,14 @@
 
 body {
   margin: 10;
-  border: 10px solid;
+  /* border: 10px solid; */
 }
   
 header,
 footer,
 main {
   margin: 0;
-  border: 10px solid;
+  /* border: 10px solid; */
 }
 
 header,
@@ -26,4 +26,74 @@ footer {
 
 .list {
   list-style-type: none;
+}
+
+/* Layout Template */
+nav {
+  padding: 0.5rem 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border-bottom: solid #EBEBEB 1px;
+  box-shadow: 0 0 2rem rgb(0 0 0 / 10%);
+}
+
+.nav-logo, .nav-logo:hover, .nav-logo:active, .bottom-nav-icon, .bottom-nav-icon:hover, .bottom-nav-icon:active {
+  color: #000;
+  text-decoration: none;
+}
+
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.padded {
+  width: 85%;
+  max-width: 75rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bottom-nav {
+  padding: 0;
+  position: fixed;
+  z-index: 1;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border-top: solid #EBEBEB 1px;
+  box-shadow: 0 0 2rem rgb(0 0 0 / 10%);
+}
+
+.bottom-nav-content {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+.bottom-nav-icon {
+  flex-grow: 1;
+  padding: 2rem 5rem;
+  text-align: center;
+}
+
+.bottom-nav-icon:not(:first-child) {
+  border-left: 3px solid rgba(0, 0, 0, .7);
+}
+
+.nav-icon {
+  font-size: 5rem !important;
+}
+
+/* Typography */
+h1 {
+  font-size: 3.5rem;
 }
