@@ -29,6 +29,25 @@
     text-decoration: none;
 }
 
+.image-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.image-container > a {
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    transform: translate(-5%, 25%);
+    background-color: #ff0000;
+    color: #fff;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+  }
+
 .spot-card-image {
     object-fit: cover;
     width: 350px;
