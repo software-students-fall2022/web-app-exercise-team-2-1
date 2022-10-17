@@ -4,18 +4,26 @@
     <title>App Name Here</title>
     <link
       rel="stylesheet"
+      href="../static/css/wrapper.css"
       href="{{ url_for('static', filename='css/wrapper.css') }}"
     />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
   </head>
   <body>
     <div class="container">
       <header>
-        <h1>Web App: App Name Here</h1>
-        <p>
-          <a href="{{ url_for('home')}}">Home</a> |
-          <a href="{{ url_for('add_spot')}}">Add a Study Spot</a> |
-          <a href="{{ url_for('')}}">In progress</a>
-        </p>
+        <nav>
+          <div class="padded">
+            <div class="nav-content">
+              <a class="nav-link" href="{{ url_for('home')}}">
+                <h1>NYU Study Spots</h1>
+              </a>
+              <a class="nav-link" href="{{ url_for('moderator_login')}}">
+                <span class="material-symbols-outlined nav-icon">login</span>
+              </a>
+            </div>
+          </div>
+        </nav>
       </header>
       <!-- <main>{% block container %} {% endblock %}</main> -->
       <main>
@@ -42,9 +50,14 @@
         </p>
       </main>
       <footer>
-        <p>
-          This site is still under construction, so please be patient with us!
-        </p>
+        <div class="bottom-nav">
+            <div class="bottom-nav-content">
+              <a class="bottom-nav-icon" href="{{ url_for('home')}}"><span class="material-symbols-outlined nav-icon">home</span></a>
+              <a class="bottom-nav-icon" href="{{ url_for('search')}}"><span class="material-symbols-outlined nav-icon">search</span></a>
+              <a class="bottom-nav-icon" href="{{ url_for('add_spot')}}"><span class="material-symbols-outlined nav-icon">add</span></a>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   </body>
