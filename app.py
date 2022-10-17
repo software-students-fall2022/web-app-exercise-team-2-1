@@ -59,7 +59,17 @@ def create_post():
 
     return render_template('add_spot.html')  # render the add study spot template
 
+@app.route('/moderator_login')
+def moderator_login():
 
+    # Route for the moderator login page
+    return render_template('moderator_login.html') 
+
+@app.route('/search')
+def search():
+
+    # Route for the moderator login page
+    return render_template('search_page.html') 
 
 """
 # route to accept form submission and create a new post
