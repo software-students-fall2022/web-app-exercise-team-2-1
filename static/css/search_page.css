@@ -54,3 +54,9 @@ align-self: center;
 padding: 10px 20px;
 color: grey;
 }
+
+form #ftype{
+    border: none;
+    outline: none;
+    color: purple;
+}

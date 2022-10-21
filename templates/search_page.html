@@ -10,9 +10,17 @@
   </head>
   <body>
     <div class="container">
-      <form>
+      <form method="POST" action="{{ url_for('search')}}">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Enter keyword">
+        <input type="text" id = "fspotname" name = "fspotname" placeholder="Enter keyword">
+        <select name="ftype" id="ftype">
+          <option value='---'>---</option>
+          <option value="Academic building">Academic Building</option>
+          <option value="Cafe/Restaurant">Cafe/Restaurant</option>
+          <option value="Library">Library</option>
+          <option value="Non-restaurant store">Non-Restaurant Store</option>
+          <option value="Miscellaneous">Miscellaneous</option>
+        </select>
         <button type="submit">Search</button>
       </form>
     </div>
