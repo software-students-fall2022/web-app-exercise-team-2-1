@@ -37,29 +37,24 @@ except Exception as e:
 
 
 # set up the routes
-
-# route for the home page
 @app.route('/')
 def home():
-
     #Route for the home page
     docs = db.spots.find({}).sort("created_at", -1) 
     return render_template('home.html', docs = docs)  # render the home template
 
 @app.route('/detail')
 def detail():
-
     # Route for the detail page
-
     return render_template('detail.html')  # render the detail template
 
 @app.route('/create')
 def create_post():
-
     # Route for the add study spot page
-
     return render_template('add_spot.html')  # render the add study spot template
 
+# route to handle adding new spots to the database
+# route accepts form submission and adds a document to database
 @app.route('/create', methods = ['POST'])
 def add_spot():
 
@@ -89,7 +84,6 @@ def add_spot():
 
     return redirect(url_for('home'))
 
-
 @app.route('/moderator_login')
 def moderator_login():
 
@@ -98,10 +92,10 @@ def moderator_login():
 
 @app.route('/search')
 def search():
-
     # Route for the moderator login page
     return render_template('search_page.html') 
-    
+
+# route handling requests to search for specific study spots
 @app.route('/search', methods = ['POST'])
 def search_spots():
     name = request.form['fspotname']
@@ -111,40 +105,6 @@ def search_spots():
     else:
         docs = db.spots.find({"name": name, "type": type}).sort("created_at", -1)
     return render_template("home.html", docs = docs) # pass the list of search results as an argument to the home page for displaying 
-
-# route to accept form submission and create a new post
-# @app.route('/create', methods=['POST'])
-# def create_post():
-    
-# #Route for POST requests to the create page.
-# #Accepts the form submission data for a new document and saves the document to the database.
-#     name = request.form['fitem']
-#     address = request.form['faddress']
-#     location = request.form['flocation']
-#     type = request.form['ftype']
-#     purchase_info = False
-#     if request.form['fpurchase'] == 'Yes':
-#         purchase_info = True
-#     noise_level = request.form['fnosie']
-#     description = request.form['fdescription']
-
-#     # create a new document with the data the user entered
-#     doc = {
-#         "name": name,
-#         "address": address, 
-#         "created_at": datetime.datetime.utcnow(),
-#         "location": location, 
-#         "type": type,
-#         "purchase_info": purchase_info,
-#         "noise_level": noise_level,
-#         "description": description,
-#     }
-#     doc = {
-#         "name": "study spot"
-#     }
-#     db.spots.insert_one(doc) # insert a new document
-
-#     return redirect(url_for('home')) # tell the browser to make a request for the / route (the home function)
 
 
 # # route to view the edit form for an existing post
@@ -193,7 +153,7 @@ def search_spots():
 #     return redirect(url_for('home')) # tell the web browser to make a request for the / route (the home function)
 
 
-# # route to handle any errors
+# route to handle any errors
 
 # @app.errorhandler(Exception)
 # def handle_error(e):
@@ -201,8 +161,6 @@ def search_spots():
 #     # Output any errors - good for debugging.
 
 #     return render_template('error.html', error=e)  # render the edit template
-
-
 
 # run the app
 if __name__ == "__main__":
