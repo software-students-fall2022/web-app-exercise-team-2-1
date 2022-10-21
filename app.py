@@ -70,6 +70,7 @@ def search():
 
     # Route for the moderator login page
     return render_template('search_page.html') 
+    
 
 """
 # route to accept form submission and create a new post
@@ -150,6 +151,15 @@ def handle_error(e):
 
     return render_template('error.html', error=e)  # render the edit template
 """
+@app.route('/search', methods = ['POST'])
+def return_search_results():
+    name = request.form['fspotname']
+    type = request.form['ftype']
+    location = request.form['flocation']
+
+    docs = db.exampleapp.find({"name": name, "type": type, "location": location}).sort("created_at", -1) 
+    return render_template("home.html", docs = docs) # pass the list of search results as an argument to the home page for displaying 
+
 
 # run the app
 if __name__ == "__main__":
