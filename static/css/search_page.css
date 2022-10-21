@@ -55,12 +55,6 @@ padding: 10px 20px;
 color: grey;
 }
 
-form #flocation{
-    border: none;
-    outline: none;
-    color: purple;
-}
-
 form #ftype{
     border: none;
     outline: none;
