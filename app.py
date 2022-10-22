@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from crypt import methods
+from tokenize import String
 from flask import Flask, render_template, request, redirect, url_for, make_response
 from dotenv import dotenv_values
 
@@ -43,10 +44,83 @@ def home():
     docs = db.spots.find({}).sort("created_at", -1) 
     return render_template('home.html', docs = docs)  # render the home template
 
+def printStar(starRating):
+    starRating = round(float(starRating))
+    index = 0
+    starStr = ""
+    while(index<5):
+        if index < starRating:
+            starStr += "★"
+        else:
+            starStr += "✩"
+        index += 1
+
+    return starStr
+
 @app.route('/detail')
 def detail():
     # Route for the detail page
-    return render_template('detail.html')  # render the detail template
+    SpotId = request.args.get('SpotId')
+    doc = db.spots.find_one({"_id": ObjectId(SpotId)})
+
+    purchase = doc["purchase_info"]
+    reviewIds = doc["reviewId"]
+    if purchase:
+        purchase = "No Purchase Required"
+    else:
+        purchase = "Purchase Required"
+    
+    spotStar = printStar(doc["star"])
+    reviewTemp = db.reviews.find({ "_id": { '$in': reviewIds }}).sort("like", -1)
+    
+    #.sort("star", -1).sort("created_at",-1).sort("like", -1)
+    reviewStar = []
+    for review in reviewTemp:
+        reviewStar.append(printStar(review["star"]))
+    
+    reviews = db.reviews.find({ "_id": { '$in': reviewIds } }).sort("like", -1)
+    
+    return render_template('detail.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar) 
+
+@app.route('/detail/like', methods = ['POST'])
+def like_review():
+
+    reviewId  = request.form['reviewId']
+    like = request.form['like']
+    addlike = 0
+    addDislike = 0
+    if like == "like":
+        addlike = 1
+    elif like == "dislike":
+        addDislike = 1
+    review = db.reviews.find_one({"_id": ObjectId(reviewId)})
+    db.reviews.update_one({"_id": ObjectId(reviewId)}, { '$inc': { "like": addlike, "dislike": addDislike}})
+    return redirect(url_for('detail', SpotId = review["spot"]))
+
+@app.route('/detail/post', methods = ['POST'])
+def post_review():
+
+    spotId  = request.form['SpotId']
+    star = request.form['star']
+    reviewText = request.form['reviewText']
+    if len(reviewText) > 0:
+        review = {
+        "star" : star,
+        "text" : reviewText,
+        "spot" : spotId,
+        "like" : 0,
+        "dislike" : 0,
+        "created_at": datetime.datetime.utcnow(),
+        }
+        db.reviews.insert_one(review)
+        reviewTemp = db.reviews.find_one({"star" : star, "text" : reviewText,"spot" : spotId})
+        reviewId = reviewTemp["_id"]
+        spot = db.spots.find_one({"_id": ObjectId(spotId)})
+        newStar = (spot["star"] * len(spot["reviewId"]) + int(star))/(len(spot["reviewId"]) + 1)
+        db.spots.update_one({"_id": ObjectId(spotId)}, {'$push': {'reviewId': reviewId}, '$set':{ 'star': newStar}})
+    
+    return redirect(url_for('detail', SpotId = spotId))
+
 
 @app.route('/create')
 def create_post():
@@ -78,6 +152,8 @@ def add_spot():
         "purchase_info": purchase_info,
         "noise_level": noise_level,
         "description": description,
+        "reviewId": [],
+        "star": 0,
     }
 
     db.spots.insert_one(doc) # insert a new document
@@ -111,53 +187,8 @@ def search_spots():
             docs = db.spots.find()
     return render_template("home.html", docs = docs) # pass the list of search results as an argument to the home page for displaying 
 
+
 """
-# route to view the edit form for an existing post
-@app.route('/edit/<mongoid>')
-def edit(mongoid):
-    
-    #Route for GET requests to the edit page.
-    #Displays a form users can fill out to edit an existing record.
-    
-    doc = db.exampleapp.find_one({"_id": ObjectId(mongoid)})
-    return render_template('edit.html', mongoid=mongoid, doc=doc) # render the edit template
-
-
-# route to accept the form submission to delete an existing post
-@app.route('/edit/<mongoid>', methods=['POST'])
-def edit_post(mongoid):
-    
-    #Route for POST requests to the edit page.
-    #Accepts the form submission data for the specified document and updates the document in the database.
-    
-    name = request.form['fname']
-    message = request.form['fmessage']
-
-    doc = {
-        # "_id": ObjectId(mongoid), 
-        "name": name, 
-        "message": message, 
-        "created_at": datetime.datetime.utcnow()
-    }
-
-    db.exampleapp.update_one(
-        {"_id": ObjectId(mongoid)}, # match criteria
-        { "$set": doc }
-    )
-
-    return redirect(url_for('home')) # tell the browser to make a request for the / route (the home function)
-
-# route to delete a specific post
-@app.route('/delete/<mongoid>')
-def delete(mongoid):
-    
-    #Route for GET requests to the delete page.
-    #Deletes the specified record from the database, and then redirects the browser to the home page.
-    
-    db.exampleapp.delete_one({"_id": ObjectId(mongoid)})
-    return redirect(url_for('home')) # tell the web browser to make a request for the / route (the home function)
-
-
 route to handle any errors
 
 @app.errorhandler(Exception)
