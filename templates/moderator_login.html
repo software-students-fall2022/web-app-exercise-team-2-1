@@ -15,15 +15,15 @@
 </head>
 <body>
 <div class="login">
-  <form>
+  <form method="POST" action="{{ url_for('moderator_authenticate')}}">
     <h1>Welcome Moderator!</h1>
     <h2>Please login</h2>
     <div class="content">
       <div class="input-field">
-        <input type="email" placeholder="Email">
+        <input type="username" placeholder="Username" name = "fusername">
       </div>
       <div class="input-field">
-        <input type="password" placeholder="Password">
+        <input type="password" placeholder="Password" name = "fpassword">
     <div class="action">
       <button>Sign in</button>
     </div>
