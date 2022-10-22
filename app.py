@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from crypt import methods
+from operator import truediv
 from tokenize import String
 from flask import Flask, render_template, request, redirect, url_for, make_response
 from dotenv import dotenv_values
@@ -37,11 +38,15 @@ except Exception as e:
     print('Database connection error:', e) # debug
 
 
+moderator_mode = False
 # set up the routes
 @app.route('/')
 def home():
     #Route for the home page
-    docs = db.spots.find({}).sort("created_at", -1) 
+    print(moderator_mode)
+    docs = db.spots.find({}).sort("created_at", -1)
+    if moderator_mode:
+        return render_template('moderator_home.html', docs = docs) 
     return render_template('home.html', docs = docs)  # render the home template
 
 def printStar(starRating):
@@ -218,6 +223,21 @@ def moderator_login():
 
     # Route for the moderator login page
     return render_template('moderator_login.html') 
+
+@app.route('/moderator_login', methods =['POST'])
+def moderator_authenticate():
+    username = request.form['fusername']
+    password = request.form['fpassword']
+
+    if username == "moderator" and password == "moderator":
+        print("yes")
+        global moderator_mode 
+        moderator_mode = True
+        return home()
+    else:
+        return render_template('moderator_login.html') 
+
+
 
 @app.route('/search')
 def search():
