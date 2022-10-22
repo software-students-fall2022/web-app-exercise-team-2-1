@@ -57,6 +57,59 @@ def printStar(starRating):
 
     return starStr
 
+@app.route('/moderator_home')
+def moderator_home():
+    #Route for the moderator home page
+    docs = db.spots.find({}).sort("created_at", -1) 
+    return render_template('moderator_home.html', docs = docs)  # render the home template
+
+@app.route('/moderator_home', methods = ['POST'])
+def delete_spot():
+    spotId = request.form['SpotId']
+    db.spots.delete_one({"_id": ObjectId(spotId)})
+    return redirect(url_for('moderator_home')) # render the home template
+
+
+@app.route('/moderator_detail')
+def moderator_detail():
+    # Route for the detail page
+    SpotId = request.args.get('SpotId')
+    doc = db.spots.find_one({"_id": ObjectId(SpotId)})
+
+    purchase = doc["purchase_info"]
+    reviewIds = doc["reviewId"]
+    if purchase:
+        purchase = "No Purchase Required"
+    else:
+        purchase = "Purchase Required"
+    
+    spotStar = printStar(doc["star"])
+    reviewTemp = db.reviews.find({ "_id": { '$in': reviewIds }}).sort("like", -1)
+    
+    #.sort("star", -1).sort("created_at",-1).sort("like", -1)
+    reviewStar = []
+    for review in reviewTemp:
+        reviewStar.append(printStar(review["star"]))
+    
+    reviews = db.reviews.find({ "_id": { '$in': reviewIds } }).sort("like", -1)
+    
+    return render_template('detail_moderator.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar) 
+
+@app.route('/moderator_detail', methods = ['POST'])
+def delete_review():
+    reviewId = request.form['reviewId']
+    review = db.reviews.find_one({"_id": ObjectId(reviewId)})
+    spot = db.spots.find_one({"_id": ObjectId(review["spot"])})
+
+    # remove review id from this spot, recalculate star
+    if len(spot["reviewId"]) -1 > 0:
+        newStar = (spot["star"] * len(spot["reviewId"]) - float(review["star"]))/(len(spot["reviewId"])-1)
+    else: 
+        newStar = 0
+    db.spots.update_one({"_id": ObjectId(review["spot"])}, {'$pull': {'reviewId': ObjectId(reviewId)}, '$set':{ 'star': newStar}})
+    db.reviews.delete_one({"_id": ObjectId(reviewId)})
+    return redirect(url_for('moderator_detail', SpotId = spot["_id"])) # render the home template
+
 @app.route('/detail')
 def detail():
     # Route for the detail page
