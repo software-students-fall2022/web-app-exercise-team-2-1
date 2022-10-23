@@ -7,7 +7,7 @@
     <div class="spot-grid-container">
         {% for doc in docs %}
             <div class="spot-card">
-                <a href="{{ url_for('detail', SpotId = doc['_id'])}}"> | <a href="{{ url_for('edit_s',mongoid=doc._id)}}">Edit</a>
+                <a href="{{ url_for('detail', SpotId = doc['_id'])}}">
                     <!-- This is also a placeholder until backend implementation -->
                     <img class="spot-card-image" src="/static/images/study-spot-800.jpeg"/>
                     <div class="study-card-name">{{doc.name}}</div>
