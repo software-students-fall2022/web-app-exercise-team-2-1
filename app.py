@@ -31,6 +31,10 @@ try:
     cxn.admin.command('ping') # The ping command is cheap and does not require auth.
     db = cxn[config['MONGO_DBNAME']] # store a reference to the database
     print(' *', 'Connected to MongoDB!') # if we get here, the connection worked!
+    if len(list(db.moderators.find())) == 0:
+        db.moderators.insert_one({"username": "moderator", "password": "moderator"})
+        db.moderators.insert_one({"username": "moderator", "password": "1234"})
+
 except Exception as e:
     # the ping command failed, so the connection is not available.
     # render_template('error.html', error=e) # render the edit template
@@ -43,7 +47,6 @@ moderator_mode = False
 @app.route('/')
 def home():
     #Route for the home page
-    print(moderator_mode)
     docs = db.spots.find({}).sort("created_at", -1)
     if moderator_mode:
         return render_template('moderator_home.html', docs = docs) 
@@ -229,13 +232,14 @@ def moderator_authenticate():
     username = request.form['fusername']
     password = request.form['fpassword']
 
-    if username == "moderator" and password == "moderator":
-        print("yes")
-        global moderator_mode 
-        moderator_mode = True
-        return home()
-    else:
-        return render_template('moderator_login.html') 
+    docs = db.moderators.find()
+    for doc in docs: 
+        if username == doc["username"] and doc["password"]:
+            global moderator_mode 
+            moderator_mode = True
+            return home()
+
+    return render_template('moderator_login.html') 
 
 
 
