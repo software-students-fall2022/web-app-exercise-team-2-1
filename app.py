@@ -9,8 +9,19 @@ import datetime
 from bson.objectid import ObjectId
 import sys, os
 
+# modules useful for user authentication
+import flask_login
+from werkzeug.security import generate_password_hash
+from werkzeug.security import check_password_hash
+
 # instantiate the app
 app = Flask(__name__)
+app.secret_key = 'team2'  
+
+# set up flask-login for user authentication
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
+
 
 # load credentials and configuration options from .env file
 # if you do not yet have a file named .env, make one based on the template in env.example
@@ -38,6 +49,60 @@ except Exception as e:
     # render_template('error.html', error=e) # render the edit template
     print(' *', "Failed to connect to MongoDB at", config['MONGO_URI'])
     print('Database connection error:', e) # debug
+
+# a class to represent a user
+class User(flask_login.UserMixin):
+    # inheriting from the UserMixin class gives this blank class default implementations of the necessary methods that flask-login requires all User objects to have
+    # see some discussion of this here: https://stackoverflow.com/questions/63231163/what-is-the-usermixin-in-flask
+    def __init__(self, data):
+        '''
+        Constructor for User objects
+        @param data: a dictionary containing the user's data pulled from the database
+        '''
+        self.id = data['_id'] # shortcut to the _id field
+        self.data = data # all user data from the database is stored within the data field
+
+def locate_user(user_id=None, email=None):
+    '''
+    Return a User object for the user with the given id or email address, or None if no such user exists.
+    @param user_id: the user_id of the user to locate
+    @param email: the email address of the user to locate
+    '''
+    if user_id:
+        # loop up by user_id
+        criteria = {"_id": ObjectId(user_id)}
+    else:
+        # loop up by email
+        criteria = {"username": username}
+    doc = db.users.find_one(criteria) # find a user with this email
+
+    # if user exists in the database, create a User object and return it
+    if doc:
+        # return a user object representing this user
+        user = User(doc)
+        return user
+    # else
+    return None
+
+@login_manager.user_loader
+def user_loader(user_id):
+    ''' 
+    This function is called automatically by flask-login with every request the browser makes to the server.
+    If there is an existing session, meaning the user has already logged in, then this function will return the logged-in user's data as a User object.
+    @param user_id: the user_id of the user to load
+    @return a User object if the user is logged-in, otherwise None
+    '''
+    return locate_user(user_id=user_id) # return a User object if a user with this user_id exists
+
+
+# set up any context processors
+# context processors allow us to make selected variables or functions available from within all templates
+
+@app.context_processor
+def inject_user():
+    # make the currently-logged-in user, if any, available to all templates as 'user'
+    return dict(user=flask_login.current_user)
+
 
 moderator_mode = False
 
@@ -72,12 +137,14 @@ def printStar(starRating):
     return starStr
 
 @app.route('/moderator_home')
+@flask_login.login_required
 def moderator_home():
     #Route for the moderator home page
     docs = db.spots.find({}).sort("created_at", -1) 
     return render_template('moderator_home.html', docs = docs)  # render the home template
 
 @app.route('/moderator_home', methods = ['POST'])
+@flask_login.login_required
 def delete_spot():
     spotId = request.form['SpotId']
     db.spots.delete_one({"_id": ObjectId(spotId)})
@@ -85,6 +152,7 @@ def delete_spot():
 
 
 @app.route('/moderator_detail')
+@flask_login.login_required
 def moderator_detail():
     # Route for the detail page
     SpotId = request.args.get('SpotId')
@@ -110,6 +178,7 @@ def moderator_detail():
     return render_template('detail_moderator.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar) 
 
 @app.route('/moderator_detail', methods = ['POST'])
+@flask_login.login_required
 def delete_review():
     reviewId = request.form['reviewId']
     review = db.reviews.find_one({"_id": ObjectId(reviewId)})
@@ -125,6 +194,7 @@ def delete_review():
     return redirect(url_for('moderator_detail', SpotId = spot["_id"])) # render the home template
 
 @app.route('/detail')
+@flask_login.login_required
 def detail():
     # Route for the detail page
     SpotId = request.args.get('SpotId')
@@ -150,6 +220,7 @@ def detail():
     return render_template('detail.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar) 
 
 @app.route('/detail/like', methods = ['POST'])
+@flask_login.login_required
 def like_review():
 
     reviewId  = request.form['reviewId']
