@@ -61,8 +61,10 @@ class User(flask_login.UserMixin):
         '''
         self.id = data['_id'] # shortcut to the _id field
         self.data = data # all user data from the database is stored within the data field
+hash_pass = generate_password_hash("moderator")
+mod_id = db.users.insert_one({"username": "moderator", "password": hash_pass, "is_moderator": True}).inserted_id 
 
-def locate_user(user_id=None, email=None):
+def locate_user(user_id=None, username=None):
     '''
     Return a User object for the user with the given id or email address, or None if no such user exists.
     @param user_id: the user_id of the user to locate
@@ -116,10 +118,15 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # set up the routes
 @app.route('/')
-def home():
+def authenticate():
     #Route for the home page
+    return render_template("moderator_login.html")
+
+@app.route('/home')
+def home():
     docs = db.spots.find({}).sort("created_at", -1)
-    if moderator_mode:
+    current_user = flask_login.current_user
+    if current_user.data["is_moderator"]:
         return render_template('moderator_home.html', docs = docs) 
     return render_template('home.html', docs = docs)  # render the home template
 
@@ -236,6 +243,7 @@ def like_review():
     return redirect(url_for('detail', SpotId = review["spot"]))
 
 @app.route('/detail/post', methods = ['POST'])
+@flask_login.login_required
 def post_review():
 
     spotId  = request.form['SpotId']
@@ -261,6 +269,7 @@ def post_review():
 
 
 @app.route('/create')
+@flask_login.login_required
 def create_post():
     # Route for the add study spot page
     
@@ -269,6 +278,7 @@ def create_post():
 # route to handle adding new spots to the database
 # route accepts form submission and adds a document to database
 @app.route('/create', methods = ['POST'])
+@flask_login.login_required
 def add_spot():
     name = request.form['fitem']
     address = request.form['faddress']
@@ -326,12 +336,14 @@ def add_spot():
     return redirect(url_for('home'))
 
 @app.route('/edit/<mongoid>')
+@flask_login.login_required
 def edit_s(mongoid):
     # Route for the add study spot page
     doc = db.spots.find_one({"_id": ObjectId(mongoid)})
     return render_template('edit_spot.html', mongoid=mongoid, doc=doc)
 
 @app.route('/edit/<mongoid>', methods = ['POST'])
+@flask_login.login_required
 def edit_spot(mongoid):
 
     name = request.form['fitem']
@@ -360,35 +372,37 @@ def edit_spot(mongoid):
 
     return redirect(url_for('home'))
 
-@app.route('/moderator_login')
-def moderator_login():
+# @app.route('/moderator_login')
+# def moderator_login():
 
-    # Route for the moderator login page
-    return render_template('moderator_login.html') 
+#     # Route for the moderator login page
+#     return render_template('moderator_login.html') 
 
-@app.route('/moderator_login', methods =['POST'])
-def moderator_authenticate():
-    username = request.form['fusername']
-    password = request.form['fpassword']
+# @app.route('/moderator_login', methods =['POST'])
+# def moderator_authenticate():
+#     username = request.form['fusername']
+#     password = request.form['fpassword']
 
-    docs = db.moderators.find()
-    for doc in docs: 
-        if username == doc["username"] and password == doc["password"]:
-            global moderator_mode 
-            moderator_mode = True
-            return home()
+#     docs = db.moderators.find()
+#     for doc in docs: 
+#         if username == doc["username"] and password == doc["password"]:
+#             global moderator_mode 
+#             moderator_mode = True
+#             return home()
 
-    return render_template('moderator_login.html') 
+#     return render_template('moderator_login.html') 
 
 
 
 @app.route('/search')
+@flask_login.login_required
 def search():
     # Route for the moderator login page
     return render_template('search_page.html') 
 
 # route handling requests to search for specific study spots
 @app.route('/search', methods = ['POST'])
+@flask_login.login_required
 def search_spots():
     name = request.form['fspotname']
     location = request.form['flocation']
@@ -442,6 +456,56 @@ def search_spots():
     return render_template("home.html", docs = docs) # pass the list of search results as an argument to the home page for displaying 
 
 
+# route to handle the submission of the login form
+@app.route('/signup', methods=['POST'])
+def signup_submit():
+    # grab the data from the form submission
+    username = request.form['fusername']
+    password = request.form['fpassword']
+    hashed_password = generate_password_hash(password) # generate a hashed password to store - don't store the original
+    
+    # check whether an account with this email already exists... don't allow duplicates
+    if locate_user(username = username):
+        flash('An account for {} already exists.  Please log in.'.format(username))
+        return redirect(url_for('authenticate')) # redirect to login page
+
+    # create a new document in the database for this new user
+    user_id = db.users.insert_one({"username": username, "password": hashed_password, "is_moderator": False}).inserted_id # hash the password and save it to the database
+    if user_id:
+        # successfully created a new user... make a nice user object
+        user = User({
+            "_id": user_id,     
+            "username": username,
+            "password": hashed_password,
+            "is_moderator": False
+        })
+        flask_login.login_user(user) # log in the user using flask-login
+        # flash('Thanks for joining, {}!'.format(user.data['username'])) # flash can be used to pass a special message to the template we are about to render
+        return redirect(url_for('home'))
+    # else
+    return 'Signup failed'
+
+# route to handle the submission of the login form
+@app.route('/login', methods=['POST'])
+def login_submit():
+    username = request.form['fusername']
+    password = request.form['fpassword']
+    user = locate_user(username=username) # load up any existing user with this email address from the database
+    # check whether the password the user entered matches the hashed password in the database
+    if user and check_password_hash(user.data['password'], password):
+        flask_login.login_user(user) # log in the user using flask-login
+        # flash('Welcome back, {}!'.format(user.data['email'])) # flash can be used to pass a special message to the template we are about to render
+
+        return redirect(url_for('home'))
+    # else
+    return redirect(url_for('authenticate'))
+
+# route to logout a user
+@app.route('/logout')
+def logout():
+    flask_login.logout_user()
+    # flash('You have been logged out.  Bye bye!') # pass a special message to the template
+    return redirect(url_for('authenticate')) # re
 """
 route to handle any errors
 
