@@ -365,6 +365,7 @@ def search_spots():
         query["noise_level"] = {"$exists": True}
 
     docs = db.spots.find(query).sort("created_at", -1)
+    print(query)
 
     
     return render_template("home.html", docs = docs) # pass the list of search results as an argument to the home page for displaying 
