@@ -344,22 +344,22 @@ def search_spots():
     else:
         query["name"] = {"$exists": True}
     
-    if location != "" or location == "---":
+    if location != "":
         query["location"] = location
     else:
         query["location"] = {"$exists": True}
 
-    if type != "" or type == "---":
+    if type != "":
         query["type"] = type
     else:
         query["type"] = {"$exists": True}
     
-    if purchase_info != "" or purchase_info == "---":
+    if purchase_info != "":
         query["purchase_info"] = purchase_info
     else:
         query["purchase_info"] = {"$exists": True}
     
-    if noise_level != "" or noise_level == "---":
+    if noise_level != "":
         query["noise_level"] = noise_level
     else:
         query["noise_level"] = {"$exists": True}
