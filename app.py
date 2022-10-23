@@ -272,22 +272,22 @@ def search_spots():
     else:
         query["name"] = {"$exists": True}
     
-    if location != "":
+    if location != "" or location == "---":
         query["location"] = location
     else:
         query["location"] = {"$exists": True}
 
-    if type != "":
+    if type != "" or type == "---":
         query["type"] = type
     else:
         query["type"] = {"$exists": True}
     
-    if purchase_info != "":
+    if purchase_info != "" or purchase_info == "---":
         query["purchase_info"] = purchase_info
     else:
         query["purchase_info"] = {"$exists": True}
     
-    if noise_level != "":
+    if noise_level != "" or noise_level == "---":
         query["noise_level"] = noise_level
     else:
         query["noise_level"] = {"$exists": True}
