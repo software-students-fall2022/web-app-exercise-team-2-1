@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from email import message
 from flask import Flask, render_template, request, redirect, url_for, make_response
 from dotenv import dotenv_values
 from werkzeug.utils import secure_filename
@@ -40,9 +41,6 @@ try:
     cxn.admin.command('ping') # The ping command is cheap and does not require auth.
     db = cxn[config['MONGO_DBNAME']] # store a reference to the database
     print(' *', 'Connected to MongoDB!') # if we get here, the connection worked!
-    if len(list(db.moderators.find())) == 0:
-        db.moderators.insert_one({"username": "moderator", "password": "moderator"})
-        db.moderators.insert_one({"username": "moderator", "password": "1234"})
 
 except Exception as e:
     # the ping command failed, so the connection is not available.
@@ -123,7 +121,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route('/')
 def authenticate():
     #Route for the home page
-    return render_template("moderator_login.html", message = "Welcome!")
+    return render_template("moderator_login.html", message = "Please login or sign up!")
 
 @app.route('/home')
 def home():
@@ -260,6 +258,7 @@ def post_review():
         "like" : 0,
         "dislike" : 0,
         "created_at": datetime.datetime.utcnow(),
+        "user": flask_login.current_user.data["username"]
         }
         db.reviews.insert_one(review)
         reviewTemp = db.reviews.find_one({"star" : star, "text" : reviewText,"spot" : spotId})
@@ -471,7 +470,7 @@ def signup_submit():
     # check whether an account with this email already exists... don't allow duplicates
     if locate_user(username = username):
         # flash('An account for {} already exists.  Please log in.'.format(username))
-        return redirect(url_for('home')) # redirect to home page
+        return render_template("moderator_login.html", message = "This username already exists.")
 
     # create a new document in the database for this new user
     user_id = db.users.insert_one({"username": username, "password": hashed_password, "is_moderator": False}).inserted_id # hash the password and save it to the database
