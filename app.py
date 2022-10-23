@@ -248,16 +248,53 @@ def search():
 @app.route('/search', methods = ['POST'])
 def search_spots():
     name = request.form['fspotname']
+    location = request.form['flocation']
     type = request.form['ftype']
-    if type == "---" and name != "":
-        docs = db.spots.find({"name": name}).sort("created_at", -1) 
+    purchase_info = False
+    if request.form['fpurchase'] == 'Yes':
+        purchase_info = True
+    noise_level = request.form['fnoise']
+
+    # if type == "---" and name != "":
+    #     docs = db.spots.find({"name": name}).sort("created_at", -1) 
+    # else:
+    #     if type != "---" and name == "":
+    #         docs = db.spots.find({"type": type}).sort("created_at", -1)
+    #     elif type != "---" and name != "":
+    #         docs = db.spots.find({"name": name, "type": type}).sort("created_at", -1)
+    #     else:
+    #         docs = db.spots.find()
+
+    query = dict()
+
+    if name != "":
+        query["name"] = name
     else:
-        if type != "---" and name == "":
-            docs = db.spots.find({"type": type}).sort("created_at", -1)
-        elif type != "---" and name != "":
-            docs = db.spots.find({"name": name, "type": type}).sort("created_at", -1)
-        else:
-            docs = db.spots.find()
+        query["name"] = {"$exists": True}
+    
+    if location != "":
+        query["location"] = location
+    else:
+        query["location"] = {"$exists": True}
+
+    if type != "":
+        query["type"] = type
+    else:
+        query["type"] = {"$exists": True}
+    
+    if purchase_info != "":
+        query["purchase_info"] = purchase_info
+    else:
+        query["purchase_info"] = {"$exists": True}
+    
+    if noise_level != "":
+        query["noise_level"] = noise_level
+    else:
+        query["noise_level"] = {"$exists": True}
+
+    docs = db.spots.find(query).sort("created_at", -1)
+
+    
     return render_template("home.html", docs = docs) # pass the list of search results as an argument to the home page for displaying 
 
 
