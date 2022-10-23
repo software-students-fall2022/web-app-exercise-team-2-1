@@ -85,6 +85,7 @@ def locate_user(user_id=None, username=None):
         return user
     # else
     return None
+    
 if locate_user(username = "moderator"):
     hash_pass = generate_password_hash("moderator")
     mod_id = db.users.insert_one({"username": "moderator", "password": hash_pass, "is_moderator": True}).inserted_id 
@@ -122,7 +123,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route('/')
 def authenticate():
     #Route for the home page
-    return render_template("moderator_login.html")
+    return render_template("moderator_login.html", message = "Welcome!")
 
 @app.route('/home')
 def home():
@@ -500,8 +501,8 @@ def login_submit():
         # flash('Welcome back, {}!'.format(user.data['email'])) # flash can be used to pass a special message to the template we are about to render
 
         return redirect(url_for('home'))
-    # else
-    return redirect(url_for('authenticate'))
+    
+    return render_template("moderator_login.html", message = "Incorrect Username or Password or Account Does Not Exist.")
 
 # route to logout a user
 @app.route('/logout')
