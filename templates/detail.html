@@ -1,120 +1,108 @@
 
 {% extends "wrapper.html" %}
-{% block container %} 
-<!doctype html>
-<html lang="en">
+{% block container %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+    crossorigin="anonymous"></script>
 
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <title>{{doc.name}}</title>
-</head>
 
-<body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
-        crossorigin="anonymous"></script>
-    
-
-    <h1>{{doc.name}}</h1>
-    {% if doc.image and doc.image != '' %}
-    <img src="/static/images/uploads/{{doc.image}}" class="img-fluid" alt="..."/>
-    {% else %}
-    <img src="/static/images/study-spot-800.jpeg" class="img-fluid" alt="..."/>
-    {% endif %}
-    <div class="container text-left">
-        <div class="row align-items-start">
-            <div class="col">
-                {{spotStar}}
-            </div>
-
+<h1>{{doc.name}}</h1>
+{% if doc.image and doc.image != '' %}
+<img src="/static/images/uploads/{{doc.image}}" class="img-fluid" alt="..."/>
+{% else %}
+<img src="/static/images/study-spot-800.jpeg" class="img-fluid" alt="..."/>
+{% endif %}
+<div class="container text-left">
+    <div class="row align-items-start">
+        <div class="col">
+            {{spotStar}}
         </div>
-        <div class="row align-items-center">
-            <div class="col">
-            {{doc.type}}, {{doc.location}}, <br>{{doc.noise_level}}, {{purchase}}
-            </div>
-        </div>
-        <div class="row align-items-end">
-            <div class="col">
-                📍 {{doc.address}}
-            </div>
-        </div>
-        <div class="row align-items-end">
-            <div class="col">
-                {{doc.description}}
-            </div>
+
+    </div>
+    <div class="row align-items-center">
+        <div class="col">
+        {{doc.type}}, {{doc.location}}, <br>{{doc.noise_level}}, {{purchase}}
         </div>
     </div>
-    <br />
-    <div class="container text-left">
-        <div class="row align-items-start">
-            <div class="col">
-             Write Review: 
-            </div>
+    <div class="row align-items-end">
+        <div class="col">
+            📍 {{doc.address}}
         </div>
-        <div class="row align-items-start">
-            <div class="col">
-                <form method="POST" action="{{ url_for('post_review')}}">
+    </div>
+    <div class="row align-items-end">
+        <div class="col">
+            {{doc.description}}
+        </div>
+    </div>
+</div>
+<br />
+<div class="container text-left">
+    <div class="row align-items-start">
+        <div class="col">
+            Write Review: 
+        </div>
+    </div>
+    <div class="row align-items-start">
+        <div class="col">
+            <form method="POST" action="{{ url_for('post_review')}}">
+                <div class="row align-items-start">
+                <div class="col-5">
+                    Star Rating: 
+                </div>
+                <div class="col-7">
                     <div class="row align-items-start">
-                    <div class="col-5">
-                       Star Rating: 
+                    <select name="star" id="star">
+                    <option value="1">★✩✩✩✩</option>
+                    <option value="2">★★✩✩✩</option>
+                    <option value="3">★★★✩✩</option>
+                    <option value="4">★★★★✩</option>
+                    <option value="5">★★★★★</option>
+                    </select>  
                     </div>
-                    <div class="col-7">
-                        <div class="row align-items-start">
-                        <select name="star" id="star">
-                        <option value="1">★✩✩✩✩</option>
-                        <option value="2">★★✩✩✩</option>
-                        <option value="3">★★★✩✩</option>
-                        <option value="4">★★★★✩</option>
-                        <option value="5">★★★★★</option>
-                      </select>  
-                        </div>
-                     </div>
                     </div>
-                    <div class="row align-items-start">
-                        
-                      <textarea type="text" id="reviewText" name="reviewText"></textarea>
-                      <input hidden name="SpotId" value= "{{doc['_id']}}"/>
-                      <input type="submit" name="create-btn" value="Post" />
-                        </div>
+                </div>
+                <div class="row align-items-start">
+                    
+                    <textarea type="text" id="reviewText" name="reviewText"></textarea>
+                    <input hidden name="SpotId" value= "{{doc['_id']}}"/>
+                    <input type="submit" name="create-btn" value="Post" />
+                    </div>
 
-                  </form>
-            </div>
-        </div>
-
-    </div>
-    Reviews: 
-
-    {% for review in reviews %}
-    
-    <div class="container text-left border">
-        <div class="row align-items-start">
-            <div class="col">
-            {{reviewStar[loop.index0]}}
-            </div>
-        </div>
-        <div class="row align-items-start">
-            <div class="col">
-            {{review.text}}
-            </div>
-        </div>
-        <div class="row align-items-start">
-            <div class="col-3">
-                <form action="{{ url_for('like_review')}}" method="post">
-                    <input hidden name="reviewId" value= "{{review['_id']}}"/>
-                    <button class = "border border-1" name="like" value="like">👍</button> {{review.like}}
-            </div>
-            <div class="col-3">
-                    <button class = "border border-1" name="like" value="dislike">👎</button> {{review.dislike}}
-                </form>       
-            </div>
+                </form>
         </div>
     </div>
 
-    {%endfor%}
-    <br/>
-</body>
+</div>
+Reviews: 
 
-</html>
+{% for review in reviews %}
 
+<div class="container text-left border">
+    <div class="row align-items-start">
+        <div class="col">
+        {{reviewStar[loop.index0]}}
+        </div>
+    </div>
+    <div class="row align-items-start">
+        <div class="col">
+        {{review.text}}
+        </div>
+    </div>
+    <div class="row align-items-start">
+        <div class="col-3">
+            <form action="{{ url_for('like_review')}}" method="post">
+                <input hidden name="reviewId" value= "{{review['_id']}}"/>
+                <button class = "border border-1" name="like" value="like">👍</button> {{review.like}}
+        </div>
+        <div class="col-3">
+                <button class = "border border-1" name="like" value="dislike">👎</button> {{review.dislike}}
+            </form>       
+        </div>
+    </div>
+</div>
+
+{%endfor%}
+<br/>
 {% endblock %}

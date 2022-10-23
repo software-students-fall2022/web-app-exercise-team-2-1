@@ -55,8 +55,8 @@ def home():
     #Route for the home page
     docs = db.spots.find({}).sort("created_at", -1)
     if moderator_mode:
-        return render_template('moderator_home.html', docs = docs) 
-    return render_template('home.html', docs = docs)  # render the home template
+        return render_template('moderator_home.html', docs = docs, title='Moderator Home') 
+    return render_template('home.html', docs = docs, title='Home')  # render the home template
 
 def printStar(starRating):
     starRating = round(float(starRating))
@@ -75,7 +75,7 @@ def printStar(starRating):
 def moderator_home():
     #Route for the moderator home page
     docs = db.spots.find({}).sort("created_at", -1) 
-    return render_template('moderator_home.html', docs = docs)  # render the home template
+    return render_template('moderator_home.html', docs = docs, title='Moderator Home')  # render the home template
 
 @app.route('/moderator_home', methods = ['POST'])
 def delete_spot():
@@ -107,7 +107,7 @@ def moderator_detail():
     
     reviews = db.reviews.find({ "_id": { '$in': reviewIds } }).sort("like", -1)
     
-    return render_template('detail_moderator.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar) 
+    return render_template('detail_moderator.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar, title=doc["name"]) 
 
 @app.route('/moderator_detail', methods = ['POST'])
 def delete_review():
@@ -147,7 +147,7 @@ def detail():
     
     reviews = db.reviews.find({ "_id": { '$in': reviewIds } }).sort("like", -1)
     
-    return render_template('detail.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar) 
+    return render_template('detail.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar, title = doc["name"]) 
 
 @app.route('/detail/like', methods = ['POST'])
 def like_review():
@@ -192,8 +192,8 @@ def post_review():
 @app.route('/create')
 def create_post():
     # Route for the add study spot page
-    
     return render_template('add_spot.html')  # render the add study spot template
+
 
 # route to handle adding new spots to the database
 # route accepts form submission and adds a document to database
@@ -224,7 +224,7 @@ def add_spot():
         invalid = True 
 
     if invalid:
-        return render_template('add_spot.html') # TODO: display error msgs
+        return render_template('add_spot.html', title="Create Study Spot") # TODO: display error msgs
 
     # optional image
     if 'fimage' in request.files:
@@ -293,13 +293,12 @@ def edit_spot(mongoid):
 def moderator_login():
 
     # Route for the moderator login page
-    return render_template('moderator_login.html') 
+    return render_template('moderator_login.html', title="Login") 
 
 @app.route('/moderator_login', methods =['POST'])
 def moderator_authenticate():
     username = request.form['fusername']
     password = request.form['fpassword']
-
     docs = db.moderators.find()
     for doc in docs: 
         if username == doc["username"] and password == doc["password"]:
@@ -311,10 +310,11 @@ def moderator_authenticate():
 
 
 
+
 @app.route('/search')
 def search():
     # Route for the moderator login page
-    return render_template('search_page.html') 
+    return render_template('search_page.html', title="Search") 
 
 # route handling requests to search for specific study spots
 @app.route('/search', methods = ['POST'])
@@ -368,6 +368,7 @@ def search_spots():
 
     
     return render_template("home.html", docs = docs) # pass the list of search results as an argument to the home page for displaying 
+
 
 
 """
