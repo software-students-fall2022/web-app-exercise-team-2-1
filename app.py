@@ -61,8 +61,8 @@ class User(flask_login.UserMixin):
         '''
         self.id = data['_id'] # shortcut to the _id field
         self.data = data # all user data from the database is stored within the data field
-hash_pass = generate_password_hash("moderator")
-mod_id = db.users.insert_one({"username": "moderator", "password": hash_pass, "is_moderator": True}).inserted_id 
+
+
 
 def locate_user(user_id=None, username=None):
     '''
@@ -85,7 +85,9 @@ def locate_user(user_id=None, username=None):
         return user
     # else
     return None
-
+if locate_user(username = "moderator"):
+    hash_pass = generate_password_hash("moderator")
+    mod_id = db.users.insert_one({"username": "moderator", "password": hash_pass, "is_moderator": True}).inserted_id 
 @login_manager.user_loader
 def user_loader(user_id):
     ''' 
@@ -467,8 +469,8 @@ def signup_submit():
     
     # check whether an account with this email already exists... don't allow duplicates
     if locate_user(username = username):
-        flash('An account for {} already exists.  Please log in.'.format(username))
-        return redirect(url_for('authenticate')) # redirect to login page
+        # flash('An account for {} already exists.  Please log in.'.format(username))
+        return redirect(url_for('home')) # redirect to home page
 
     # create a new document in the database for this new user
     user_id = db.users.insert_one({"username": username, "password": hashed_password, "is_moderator": False}).inserted_id # hash the password and save it to the database
