@@ -16,8 +16,9 @@
         <h2>Add a new study spot:</h2>
       </header>
       <main>
-        <form method="POST" action="{{ url_for('add_spot')}}">
+        <form method="POST" action="{{ url_for('add_spot')}}" enctype="multipart/form-data">
           <p class="field">Name/Title for the study spot: <input type="text" id="fitem" name="fitem" /><br /></p>
+          <p class="field">Image: <input type="file" name="fimage"></p>
           <p>Address: <input type="text" id="faddress" name="faddress" /><br /></p>
           <p>Location:
             <select name="flocation" id="flocation">

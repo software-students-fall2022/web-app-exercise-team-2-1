@@ -10,7 +10,11 @@
             <div class="spot-card">
                 <a href="{{ url_for('moderator_detail', SpotId = doc['_id'])}}">
                     <!-- This is also a placeholder until backend implementation -->
+                    {% if doc.image and doc.image != '' %}
+                    <img class="spot-card-image" src="/static/images/uploads/{{doc.image}}"/>
+                    {% else %}
                     <img class="spot-card-image" src="/static/images/study-spot-800.jpeg"/>
+                    {% endif %}
                     <form action="{{ url_for('delete_spot')}}" method="post">
                         <input hidden name="SpotId" value= "{{doc['_id']}}"/>
                         <button class = "border border-1" name="delete" value="delete"><span class="material-symbols-outlined location-icon">delete</span></button>
