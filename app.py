@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 
-from crypt import methods
-from operator import truediv
-from tokenize import String
 from flask import Flask, render_template, request, redirect, url_for, make_response
 from dotenv import dotenv_values
+from werkzeug.utils import secure_filename
 
 import pymongo
 import datetime
 from bson.objectid import ObjectId
-import sys
+import sys, os
 
 # instantiate the app
 app = Flask(__name__)
@@ -37,8 +35,16 @@ except Exception as e:
     print(' *', "Failed to connect to MongoDB at", config['MONGO_URI'])
     print('Database connection error:', e) # debug
 
-
 moderator_mode = False
+
+valid_locations = {'On campus', 'Off campus'}
+valid_types = {'Academic building', 'Cafe/Restaurant', 'Library', 'Non-restaurant store', 'Miscellaneous'}
+valid_noise_levels = {'Silent', 'Quiet', 'Conversational', 'Loud'}
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+UPLOAD_FOLDER = os.path.join('static', 'images', 'uploads')
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 # set up the routes
 @app.route('/')
 def home():
@@ -189,7 +195,6 @@ def create_post():
 # route accepts form submission and adds a document to database
 @app.route('/create', methods = ['POST'])
 def add_spot():
-
     name = request.form['fitem']
     address = request.form['faddress']
     location = request.form['flocation']
@@ -199,10 +204,37 @@ def add_spot():
         purchase_info = True
     noise_level = request.form['fnoise']
     description = request.form['fdescription']
+    filename = '' # optional image none by default
 
+    # validate input (could be a function)
+    invalid = False
+    if name == '':
+        invalid = True
+    if address == '':
+        invalid = True
+    if location not in valid_locations:
+        invalid = True
+    if type not in valid_types:
+        invalid = True
+    if noise_level not in valid_noise_levels:
+        invalid = True 
+
+    if invalid:
+        return render_template('add_spot.html') # TODO: display error msgs
+
+    # optional image
+    if 'fimage' in request.files:
+        file = request.files['fimage']
+        fname = file.filename
+        if fname != '' and '.' in fname \
+            and fname.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS:
+            filename = secure_filename(fname)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    
     # create a new document with the data the user entered
     doc = {
         "name": name,
+        "image": filename,
         "address": address, 
         "created_at": datetime.datetime.utcnow(),
         "location": location, 
