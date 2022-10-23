@@ -17,7 +17,11 @@
     
 
     <h1>{{doc.name}}</h1>
-    <img src="/static/images/study-spot-800.jpeg" class="img-fluid" alt="...">
+    {% if doc.image and doc.image != '' %}
+    <img src="/static/images/uploads/{{doc.image}}" class="img-fluid" alt="..."/>
+    {% else %}
+    <img src="/static/images/study-spot-800.jpeg" class="img-fluid" alt="..."/>
+    {% endif %}
     <div class="container text-left">
         <div class="row align-items-start">
             <div class="col">
