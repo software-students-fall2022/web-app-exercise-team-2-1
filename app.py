@@ -192,6 +192,7 @@ def post_review():
 @app.route('/create')
 def create_post():
     # Route for the add study spot page
+    
     return render_template('add_spot.html')  # render the add study spot template
 
 # route to handle adding new spots to the database
@@ -250,6 +251,41 @@ def add_spot():
     }
 
     db.spots.insert_one(doc) # insert a new document
+
+    return redirect(url_for('home'))
+
+@app.route('/edit/<mongoid>')
+def edit_s(mongoid):
+    # Route for the add study spot page
+    doc = db.spots.find_one({"_id": ObjectId(mongoid)})
+    return render_template('edit_spot.html', mongoid=mongoid, doc=doc)
+
+@app.route('/edit/<mongoid>', methods = ['POST'])
+def edit_spot(mongoid):
+
+    name = request.form['fitem']
+    address = request.form['faddress']
+    location = request.form['flocation']
+    type = request.form['ftype']
+    purchase_info = False
+    if request.form['fpurchase'] == 'Yes':
+        purchase_info = True
+    noise_level = request.form['fnoise']
+    description = request.form['fdescription']
+
+    # create a new document with the data the user entered
+    doc = {
+        "name": name,
+        "address": address, 
+        "created_at": datetime.datetime.utcnow(),
+        "location": location, 
+        "type": type,
+        "purchase_info": purchase_info,
+        "noise_level": noise_level,
+        "description": description,
+    }
+
+    db.spots.update_one({"_id": ObjectId(mongoid)}, {"$set": doc})
 
     return redirect(url_for('home'))
 
