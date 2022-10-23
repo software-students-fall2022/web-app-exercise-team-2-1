@@ -29,6 +29,10 @@ try:
     cxn.admin.command('ping') # The ping command is cheap and does not require auth.
     db = cxn[config['MONGO_DBNAME']] # store a reference to the database
     print(' *', 'Connected to MongoDB!') # if we get here, the connection worked!
+    if len(list(db.moderators.find())) == 0:
+        db.moderators.insert_one({"username": "moderator", "password": "moderator"})
+        db.moderators.insert_one({"username": "moderator", "password": "1234"})
+
 except Exception as e:
     # the ping command failed, so the connection is not available.
     # render_template('error.html', error=e) # render the edit template
@@ -49,7 +53,6 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route('/')
 def home():
     #Route for the home page
-    print(moderator_mode)
     docs = db.spots.find({}).sort("created_at", -1)
     if moderator_mode:
         return render_template('moderator_home.html', docs = docs, title='Moderator Home') 
@@ -189,7 +192,8 @@ def post_review():
 @app.route('/create')
 def create_post():
     # Route for the add study spot page
-    return render_template('add_spot.html', title='Create Study Spot')  # render the add study spot template
+    return render_template('add_spot.html')  # render the add study spot template
+
 
 # route to handle adding new spots to the database
 # route accepts form submission and adds a document to database
@@ -250,6 +254,41 @@ def add_spot():
 
     return redirect(url_for('home'))
 
+@app.route('/edit/<mongoid>')
+def edit_s(mongoid):
+    # Route for the add study spot page
+    doc = db.spots.find_one({"_id": ObjectId(mongoid)})
+    return render_template('edit_spot.html', mongoid=mongoid, doc=doc)
+
+@app.route('/edit/<mongoid>', methods = ['POST'])
+def edit_spot(mongoid):
+
+    name = request.form['fitem']
+    address = request.form['faddress']
+    location = request.form['flocation']
+    type = request.form['ftype']
+    purchase_info = False
+    if request.form['fpurchase'] == 'Yes':
+        purchase_info = True
+    noise_level = request.form['fnoise']
+    description = request.form['fdescription']
+
+    # create a new document with the data the user entered
+    doc = {
+        "name": name,
+        "address": address, 
+        "created_at": datetime.datetime.utcnow(),
+        "location": location, 
+        "type": type,
+        "purchase_info": purchase_info,
+        "noise_level": noise_level,
+        "description": description,
+    }
+
+    db.spots.update_one({"_id": ObjectId(mongoid)}, {"$set": doc})
+
+    return redirect(url_for('home'))
+
 @app.route('/moderator_login')
 def moderator_login():
 
@@ -260,14 +299,15 @@ def moderator_login():
 def moderator_authenticate():
     username = request.form['fusername']
     password = request.form['fpassword']
+    docs = db.moderators.find()
+    for doc in docs: 
+        if username == doc["username"] and password == doc["password"]:
+            global moderator_mode 
+            moderator_mode = True
+            return home()
 
-    if username == "moderator" and password == "moderator":
-        print("yes")
-        global moderator_mode 
-        moderator_mode = True
-        return home()
-    else:
-        return render_template('moderator_login.html', title="Login") 
+    return render_template('moderator_login.html') 
+
 
 
 
@@ -280,17 +320,55 @@ def search():
 @app.route('/search', methods = ['POST'])
 def search_spots():
     name = request.form['fspotname']
+    location = request.form['flocation']
     type = request.form['ftype']
-    if type == "---" and name != "":
-        docs = db.spots.find({"name": name}).sort("created_at", -1) 
+    purchase_info = False
+    if request.form['fpurchase'] == 'Yes':
+        purchase_info = True
+    noise_level = request.form['fnoise']
+
+    # if type == "---" and name != "":
+    #     docs = db.spots.find({"name": name}).sort("created_at", -1) 
+    # else:
+    #     if type != "---" and name == "":
+    #         docs = db.spots.find({"type": type}).sort("created_at", -1)
+    #     elif type != "---" and name != "":
+    #         docs = db.spots.find({"name": name, "type": type}).sort("created_at", -1)
+    #     else:
+    #         docs = db.spots.find()
+
+    query = dict()
+
+    if name != "":
+        query["name"] = name
     else:
-        if type != "---" and name == "":
-            docs = db.spots.find({"type": type}).sort("created_at", -1)
-        elif type != "---" and name != "":
-            docs = db.spots.find({"name": name, "type": type}).sort("created_at", -1)
-        else:
-            docs = db.spots.find()
-    return render_template("home.html", docs = docs, title="Home") # pass the list of search results as an argument to the home page for displaying 
+        query["name"] = {"$exists": True}
+    
+    if location != "" or location == "---":
+        query["location"] = location
+    else:
+        query["location"] = {"$exists": True}
+
+    if type != "" or type == "---":
+        query["type"] = type
+    else:
+        query["type"] = {"$exists": True}
+    
+    if purchase_info != "" or purchase_info == "---":
+        query["purchase_info"] = purchase_info
+    else:
+        query["purchase_info"] = {"$exists": True}
+    
+    if noise_level != "" or noise_level == "---":
+        query["noise_level"] = noise_level
+    else:
+        query["noise_level"] = {"$exists": True}
+
+    docs = db.spots.find(query).sort("created_at", -1)
+
+    
+    return render_template("home.html", docs = docs) # pass the list of search results as an argument to the home page for displaying 
+
 
 
 """
