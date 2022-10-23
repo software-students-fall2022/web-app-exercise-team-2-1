@@ -234,7 +234,7 @@ def moderator_authenticate():
 
     docs = db.moderators.find()
     for doc in docs: 
-        if username == doc["username"] and doc["password"]:
+        if username == doc["username"] and password == doc["password"]:
             global moderator_mode 
             moderator_mode = True
             return home()
