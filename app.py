@@ -148,7 +148,7 @@ def printStar(starRating):
 def moderator_home():
     #Route for the moderator home page
     docs = db.spots.find({}).sort("created_at", -1) 
-    return render_template('moderator_home.html', docs = docs)  # render the home template
+    return render_template('moderator_home.html', docs = docs, title='Moderator Home')  # render the home template
 
 @app.route('/moderator_home', methods = ['POST'])
 @flask_login.login_required
@@ -182,7 +182,7 @@ def moderator_detail():
     
     reviews = db.reviews.find({ "_id": { '$in': reviewIds } }).sort("like", -1)
     
-    return render_template('detail_moderator.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar) 
+    return render_template('detail_moderator.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar, title=doc["name"]) 
 
 @app.route('/moderator_detail', methods = ['POST'])
 @flask_login.login_required
@@ -224,7 +224,7 @@ def detail():
     
     reviews = db.reviews.find({ "_id": { '$in': reviewIds } }).sort("like", -1)
     
-    return render_template('detail.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar) 
+    return render_template('detail.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar, title = doc["name"]) 
 
 @app.route('/detail/like', methods = ['POST'])
 @flask_login.login_required
@@ -272,8 +272,8 @@ def post_review():
 @flask_login.login_required
 def create_post():
     # Route for the add study spot page
-    
     return render_template('add_spot.html')  # render the add study spot template
+
 
 # route to handle adding new spots to the database
 # route accepts form submission and adds a document to database
@@ -305,7 +305,7 @@ def add_spot():
         invalid = True 
 
     if invalid:
-        return render_template('add_spot.html') # TODO: display error msgs
+        return render_template('add_spot.html', title="Create Study Spot") # TODO: display error msgs
 
     # optional image
     if 'fimage' in request.files:
@@ -394,11 +394,12 @@ def edit_spot(mongoid):
 
 
 
+
 @app.route('/search')
 @flask_login.login_required
 def search():
     # Route for the moderator login page
-    return render_template('search_page.html') 
+    return render_template('search_page.html', title="Search") 
 
 # route handling requests to search for specific study spots
 @app.route('/search', methods = ['POST'])
@@ -429,22 +430,22 @@ def search_spots():
     else:
         query["name"] = {"$exists": True}
     
-    if location != "" or location == "---":
+    if location != "":
         query["location"] = location
     else:
         query["location"] = {"$exists": True}
 
-    if type != "" or type == "---":
+    if type != "":
         query["type"] = type
     else:
         query["type"] = {"$exists": True}
     
-    if purchase_info != "" or purchase_info == "---":
+    if purchase_info != "":
         query["purchase_info"] = purchase_info
     else:
         query["purchase_info"] = {"$exists": True}
     
-    if noise_level != "" or noise_level == "---":
+    if noise_level != "":
         query["noise_level"] = noise_level
     else:
         query["noise_level"] = {"$exists": True}
