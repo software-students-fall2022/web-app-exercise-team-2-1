@@ -1,6 +1,7 @@
 {% extends "wrapper.html" %}
 {% block container %}
 <link rel="stylesheet" href="../static/css/add_spot.css"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abel">
 <div class="form-container">
   <h2>Edit your spot:</h2>
   <form method="POST" action="{{ url_for('edit_spot', mongoid=mongoid) }}">
