@@ -12,14 +12,15 @@
     <div class="container">
       <form method="POST" action="{{ url_for('search_spots')}}">
         <i class="fa-solid fa-magnifying-glass"></i>
-        Name:
         <input type="text" id = "fspotname" name = "fspotname" placeholder="Enter keyword">
+        <div class="break"></div>
         Location:
         <select name="flocation" id="flocation" value="">
           <option value=""></option>
           <option value="On campus">On Campus</option>
           <option value="Off campus">Off Campus</option>
         </select>
+        <div class="break"></div>
         Type:
         <select name="ftype" id="ftype" value="">
           <option value=""></option>
@@ -29,12 +30,14 @@
           <option value="Non-restaurant store">Non-Restaurant Store</option>
           <option value="Miscellaneous">Miscellaneous</option>
         </select>
+        <div class="break"></div>
         Requires Purchase:
         <select name="fpurchase" id="fpurchase" value="">
           <option value=""></option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
         </select>
+        <div class="break"></div>
         Noise Level:
         <select name="fnoise" id="fnoise" value="">
           <option value=""></option>
@@ -43,6 +46,7 @@
           <option value="Conversational">Conversational</option>
           <option value="Loud">Loud</option>
         </select>
+        <div class="break"></div>
         <button type="submit">Search</button>
       </form>
     </div>

@@ -1,68 +1,115 @@
 {% extends "wrapper.html" %}
 {% block container %}
+<link rel="stylesheet" href="../static/css/add_spot.css"/>
+<div class="form-container">
+  <h2>Edit your spot:</h2>
+  <form method="POST" action="{{ url_for('edit_spot', mongoid=mongoid) }}">
+    <p>Name/Title for the study spot: <input type="text" id="fitem" name="fitem" value="{{doc.name}}" /><br /></p>
+    <p>Address: <input type="text" id="faddress" name="faddress" value="{{doc.address}}" /><br /></p>
+    <p>Location:
+      <select name="flocation" id="flocation" value="{{doc.location}}">
+        
+        {% if doc.location == "On campus" %}
+        <option value="On campus" selected>On Campus</option>
+        {% else %}
+        <option value="On campus">On Campus</option>
+        {% endif %}
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>App Name Here</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/wrapper.css') }}"
-    />
-  </head>
-  <body>
-    <div class="container">
-      <header>
-        <h2>Edit your spot:</h2>
-      </header>
-      <main>
-        <form method="POST" action="{{ url_for('edit_spot', mongoid=mongoid) }}">
-          <p class="field">Name/Title for the study spot: <input type="text" id="fitem" name="fitem" value="{{doc.name}}" /><br /></p>
-          <p>Address: <input type="text" id="faddress" name="faddress" value="{{doc.address}}" /><br /></p>
-          <p>Location:
-            <select name="flocation" id="flocation" value="{{doc.location}}">
-              <option value="On campus">On Campus</option>
-              <option value="Off campus">Off Campus</option>
-            </select>
-            <br />
-          </p>
-          <p>Study Spot Type:
-            <select name="ftype" id="ftype" value="{{doc.type}}">
-              <option value="Academic building">Academic Building</option>
-              <option value="Cafe/Restaurant">Cafe/Restaurant</option>
-              <option value="Library">Library</option>
-              <option value="Non-restaurant store">Non-Restaurant Store</option>
-              <option value="Miscellaneous">Miscellaneous</option>
-            </select>
-            <br />
-          </p>
-          <p>Requires Purchase:
-            <select name="fpurchase" id="fpurchase" value="{{doc.purchase_info}}">
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
-            <br />
-          </p>
-          <p>Noise Level:
-            <select name="fnoise" id="fnoise" value="{{doc.noise_level}}">
-              <option value="Silent">Silent</option>
-              <option value="Quiet">Quiet</option>
-              <option value="Conversational">Conversational</option>
-              <option value="Loud">Loud</option>
-            </select>
-            <br />
-          </p>
-          <p>
-            Description/Notes:<br />
-            <textarea type="text" id="fdescription" name="fdescription" value="{{doc.description}}"></textarea>
-          </p>
-          <p>
-            <a href="{{ url_for('home')}}">Cancel</a>
-            <input type="submit" name="edit-btn" value="Update" />
-          </p>
-        </form>
-      </main>
-    </div>
-  </body>
-</html>
+        {% if doc.location == "Off campus" %}
+        <option value="Off campus" selected>Off Campus</option>
+        {% else %}
+        <option value="Off campus">Off Campus</option>
+        {% endif %}
+
+      </select>
+      <br />
+    </p>
+    <p>Study Spot Type:
+      <select name="ftype" id="ftype" value="{{doc.type}}">
+      
+      {% if doc.type == "Academic building" %}
+      <option value="Academic building" selected>Academic Building</option>
+      {% else %}
+      <option value="Academic building">Academic Building</option>
+      {% endif %}
+
+      {% if doc.type == "Cafe/Restaurant" %}
+      <option value="Cafe/Restaurant" selected>Cafe/Restaurant</option>
+      {% else %}
+      <option value="Cafe/Restaurant">Cafe/Restaurant</option>
+      {% endif %}
+
+      {% if doc.type == "Library" %}
+      <option value="Library" selected>Library</option>
+      {% else %}
+      <option value="Library">Library</option>
+      {% endif %}
+
+      {% if doc.type == "Non-restaurant store" %}
+      <option value="Non-restaurant store" selected>Non-restaurant store</option>
+      {% else %}
+      <option value="Non-restaurant store">Non-restaurant store</option>
+      {% endif %}
+
+      {% if doc.type == "Miscellaneous" %}
+      <option value="Miscellaneous" selected>Miscellaneous</option>
+      {% else %}
+      <option value="Miscellaneous">Miscellaneous</option>
+      {% endif %}
+
+      </select>
+      <br />
+    </p>
+    <p>Requires Purchase:
+      <select name="fpurchase" id="fpurchase" value="Yes">
+      {% if not doc.purchase_info%}
+        <option value="Yes" selected>Yes</option>
+        <option value="No">No</option>
+      {% else %}
+      <option value="Yes" >Yes</option>
+      <option value="No"selected>No</option>
+      {% endif %}
+
+      </select>
+      <br />
+    </p>
+    <p>Noise Level:
+      <select name="fnoise" id="fnoise" value="{{doc.noise_level}}">
+        {% if doc.noise_level == "Silent" %}
+        <option value="Silent" selected>Silent</option>
+        {% else %}
+        <option value="Silent">Silent</option>
+        {% endif %}
+
+        {% if doc.noise_level == "Quiet" %}
+        <option value="Quiet" selected>Quiet</option>
+        {% else %}
+        <option value="Quiet">Quiet</option>
+        {% endif %}
+
+        {% if doc.noise_level == "Conversational" %}
+        <option value="Conversational" selected>Conversational</option>
+        {% else %}
+        <option value="Conversational">Conversational</option>
+        {% endif %}
+
+        {% if doc.noise_level == "Loud" %}
+        <option value="Loud" selected>Loud</option>
+        {% else %}
+        <option value="Loud">Loud</option>
+        {% endif %}
+
+      </select>
+      <br />
+    </p>
+    <p>
+      Description/Notes:<br />
+      <textarea type="text" id="fdescription" name="fdescription" value="{{doc.description}}">{{doc.description}}</textarea>
+    </p>
+    <p>
+      <input type="submit" name="edit-btn" value="Update" />
+    </p>
+  </form>
+  <a class="cancel-btn" href="{{ url_for('home')}}">Cancel</a>
+</div>
 {% endblock %}

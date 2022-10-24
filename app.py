@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from email import message
+from pickle import TRUE
 from flask import Flask, render_template, request, redirect, url_for, make_response
 from dotenv import dotenv_values
 from werkzeug.utils import secure_filename
@@ -106,8 +107,6 @@ def inject_user():
     # make the currently-logged-in user, if any, available to all templates as 'user'
     return dict(user=flask_login.current_user)
 
-
-moderator_mode = False
 
 valid_locations = {'On campus', 'Off campus'}
 valid_types = {'Academic building', 'Cafe/Restaurant', 'Library', 'Non-restaurant store', 'Miscellaneous'}
@@ -220,12 +219,25 @@ def detail():
     
     #.sort("star", -1).sort("created_at",-1).sort("like", -1)
     reviewStar = []
+    reviewLike = []
+    reviewDislike = []
+    reviewLikeStatus = []
+
     for review in reviewTemp:
         reviewStar.append(printStar(review["star"]))
+        reviewLike.append(len(review["like"]))
+        reviewDislike.append(len(review["dislike"]))
+        if(flask_login.current_user.data["username"] in review["like"]):
+            reviewLikeStatus.append(1)
+        elif(flask_login.current_user.data["username"] in review["dislike"]):
+            reviewLikeStatus.append(2)
+        else:
+            reviewLikeStatus.append(0)
     
     reviews = db.reviews.find({ "_id": { '$in': reviewIds } }).sort("like", -1)
     
-    return render_template('detail.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar, title = doc["name"]) 
+    return render_template('detail.html', doc = doc, purchase = purchase, 
+    reviews = reviews, reviewStar = reviewStar, spotStar = spotStar, title = doc["name"],reviewDislike = reviewDislike,reviewLike = reviewLike, reviewLikeStatus = reviewLikeStatus) 
 
 @app.route('/detail/like', methods = ['POST'])
 @flask_login.login_required
@@ -233,14 +245,14 @@ def like_review():
 
     reviewId  = request.form['reviewId']
     like = request.form['like']
-    addlike = 0
-    addDislike = 0
-    if like == "like":
-        addlike = 1
-    elif like == "dislike":
-        addDislike = 1
+
     review = db.reviews.find_one({"_id": ObjectId(reviewId)})
-    db.reviews.update_one({"_id": ObjectId(reviewId)}, { '$inc': { "like": addlike, "dislike": addDislike}})
+    if (not flask_login.current_user.data["username"] in review["like"] and not flask_login.current_user.data["username"] in review["dislike"]):
+        if (like == "like"):
+            db.reviews.update_one({"_id": ObjectId(reviewId)}, { '$push': { "like": flask_login.current_user.data["username"]}})
+        elif like == "dislike":
+            db.reviews.update_one({"_id": ObjectId(reviewId)}, { '$push': { "dislike": flask_login.current_user.data["username"]}})
+
     return redirect(url_for('detail', SpotId = review["spot"]))
 
 @app.route('/detail/post', methods = ['POST'])
@@ -255,8 +267,8 @@ def post_review():
         "star" : star,
         "text" : reviewText,
         "spot" : spotId,
-        "like" : 0,
-        "dislike" : 0,
+        "like" : [],
+        "dislike" : [],
         "created_at": datetime.datetime.utcnow(),
         "user": flask_login.current_user.data["username"]
         }
@@ -274,7 +286,7 @@ def post_review():
 @flask_login.login_required
 def create_post():
     # Route for the add study spot page
-    return render_template('add_spot.html')  # render the add study spot template
+    return render_template('add_spot.html', title='Create Study Spot')  # render the add study spot template
 
 
 # route to handle adding new spots to the database
@@ -286,9 +298,9 @@ def add_spot():
     address = request.form['faddress']
     location = request.form['flocation']
     type = request.form['ftype']
-    purchase_info = False
+    purchase_info = True
     if request.form['fpurchase'] == 'Yes':
-        purchase_info = True
+        purchase_info = False
     noise_level = request.form['fnoise']
     description = request.form['fdescription']
     filename = '' # optional image none by default
@@ -343,7 +355,7 @@ def add_spot():
 def edit_s(mongoid):
     # Route for the add study spot page
     doc = db.spots.find_one({"_id": ObjectId(mongoid)})
-    return render_template('edit_spot.html', mongoid=mongoid, doc=doc)
+    return render_template('edit_spot.html', mongoid=mongoid, doc=doc, title="Edit Spot")
 
 @app.route('/edit/<mongoid>', methods = ['POST'])
 @flask_login.login_required
@@ -353,9 +365,9 @@ def edit_spot(mongoid):
     address = request.form['faddress']
     location = request.form['flocation']
     type = request.form['ftype']
-    purchase_info = False
+    purchase_info = True
     if request.form['fpurchase'] == 'Yes':
-        purchase_info = True
+        purchase_info = False
     noise_level = request.form['fnoise']
     description = request.form['fdescription']
 
