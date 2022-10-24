@@ -341,28 +341,18 @@ def search_spots():
 
     if name != "":
         query["name"] = name
-    else:
-        query["name"] = {"$exists": True}
     
     if location != "":
         query["location"] = location
-    else:
-        query["location"] = {"$exists": True}
 
     if type != "":
         query["type"] = type
-    else:
-        query["type"] = {"$exists": True}
     
     if purchase_info != "":
         query["purchase_info"] = purchase_info
-    else:
-        query["purchase_info"] = {"$exists": True}
     
     if noise_level != "":
         query["noise_level"] = noise_level
-    else:
-        query["noise_level"] = {"$exists": True}
 
     docs = db.spots.find(query).sort("created_at", -1)
 
