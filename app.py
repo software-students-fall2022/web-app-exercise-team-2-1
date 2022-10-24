@@ -365,9 +365,9 @@ def edit_spot(mongoid):
     address = request.form['faddress']
     location = request.form['flocation']
     type = request.form['ftype']
-    purchase_info = False
+    purchase_info = True
     if request.form['fpurchase'] == 'Yes':
-        purchase_info = True
+        purchase_info = False
     noise_level = request.form['fnoise']
     description = request.form['fdescription']
 
