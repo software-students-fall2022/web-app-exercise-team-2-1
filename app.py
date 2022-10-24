@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from email import message
+from pickle import TRUE
 from flask import Flask, render_template, request, redirect, url_for, make_response
 from dotenv import dotenv_values
 from werkzeug.utils import secure_filename
@@ -167,9 +168,9 @@ def moderator_detail():
     purchase = doc["purchase_info"]
     reviewIds = doc["reviewId"]
     if purchase:
-        purchase = "Purchase Required"
-    else:
         purchase = "No Purchase Required"
+    else:
+        purchase = "Purchase Required"
     
     spotStar = printStar(doc["star"])
     reviewTemp = db.reviews.find({ "_id": { '$in': reviewIds }}).sort("like", -1)
@@ -297,9 +298,9 @@ def add_spot():
     address = request.form['faddress']
     location = request.form['flocation']
     type = request.form['ftype']
-    purchase_info = False
+    purchase_info = True
     if request.form['fpurchase'] == 'Yes':
-        purchase_info = True
+        purchase_info = False
     noise_level = request.form['fnoise']
     description = request.form['fdescription']
     filename = '' # optional image none by default

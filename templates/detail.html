@@ -1,140 +1,167 @@
 
 {% extends "wrapper.html" %}
 {% block container %}
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+<!DOCTYPE html>
+<html>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
     crossorigin="anonymous"></script>
+    <body style = "background: #d7bfdc;">
+        <div class="container">
+        {% if doc.image and doc.image != '' %}
+            <img src="/static/images/uploads/{{doc.image}}" alt="study spot image" class="img-fluid">
 
-
-<h1>{{doc.name}}</h1>
-{% if doc.image and doc.image != '' %}
-<img src="/static/images/uploads/{{doc.image}}" class="img-fluid" alt="..."/>
-{% else %}
-<img src="/static/images/study-spot-800.jpeg" class="img-fluid" alt="..."/>
-{% endif %}
-<div class="container text-left">
-    <div class="row align-items-start">
-        <div class="col">
-            {{spotStar}}
+        {% else %}
+        <img src="/static/images/study-spot-800.jpeg" class="img-fluid" alt="..."/>
+        {% endif %}
+        <div style="position: relative; top: -100px;left: 5%;width: 100%;">
+            <span class="display-4 bg-dark p-1" style="color:white;--bs-bg-opacity: .6;border-radius: 5px;">{{doc.name}}</span>
         </div>
-
-    </div>
-    <div class="row align-items-center">
-        <div class="col">
-        {{doc.type}}, {{doc.location}}, <br>{{doc.noise_level}}, {{purchase}}
+        <div style="position: relative; top: -85px;left: 5%;width: 100%;">
+            <span class="display-6 bg-dark p-1" style="color:white;--bs-bg-opacity: .6;">{{spotStar}}</span>
         </div>
     </div>
-    <div class="row align-items-end">
-        <div class="col">
-            📍 {{doc.address}}
-        </div>
-    </div>
-    <div class="row align-items-end">
-        <div class="col">
-            {{doc.description}}
-        </div>
-    </div>
-    <div class="row align-items-end">
-        <div class="col">
-            <strong>Added by: </strong>{{doc.added_by}}
-        </div>
-    </div>
-</div>
-<br />
-<div class="container text-left">
-    <div class="row align-items-start">
-        <div class="col">
-            Write Review: 
-        </div>
-    </div>
-    <div class="row align-items-start">
-        <div class="col">
-            <form method="POST" action="{{ url_for('post_review')}}">
-                <div class="row align-items-start">
-                <div class="col-5">
-                    Star Rating: 
+        <div class="container border bg-light" style="--bs-bg-opacity: .6; border-radius: 5px; position: relative; margin-top: -50px;">
+            <div class="row align-items-center">
+                <div class="col-7" style="color:black; font-weight: bold;">
+                 {{doc.type}} 
                 </div>
-                <div class="col-7">
-                    <div class="row align-items-start">
-                    <select name="star" id="star">
-                    <option value="1">★✩✩✩✩</option>
-                    <option value="2">★★✩✩✩</option>
-                    <option value="3">★★★✩✩</option>
-                    <option value="4">★★★★✩</option>
-                    <option value="5">★★★★★</option>
-                    </select>  
+                <div class="col-5" style="color:black; font-weight: bold;">
+                    {{doc.noise_level}} 
                     </div>
-                    </div>
+
+            </div>
+            <div class="row align-items-center">
+                <div class="col-7" style="color:black; font-weight: bold;">
+                {{purchase}} <br/>
                 </div>
-                <div class="row align-items-start">
-                    
-                    <textarea type="text" id="reviewText" name="reviewText"></textarea>
-                    <input hidden name="SpotId" value= "{{doc['_id']}}"/>
-                    <input type="submit" name="create-btn" value="Post" />
+                <div class="col" style="color:black; font-weight: bold;">
+                    {{doc.location}} <br/>
                     </div>
 
-                </form>
+            </div>
+            <div class="row align-items-end">
+                <div class="col">
+                    📍 {{doc.address}}
+                </div>
+            </div>
         </div>
-    </div>
+        <br/>
+        <div class="container border bg-light" style="--bs-bg-opacity: .6; border-radius: 5px;">
+            <div class="row align-items-end">
+                <div class="col">
+                    {{doc.description}}
+                </div>
+            </div>
+        </div>
+        
+        <br/>
+        <div class="container border bg-light" style="--bs-bg-opacity: .6; border-radius: 5px;">
+            <div class="row align-items-start">
+                <div class="col">
+                    Write Review: 
+                </div>
+            </div>
+            <div class="row align-items-start">
+                <div class="col">
+                    <form method="POST" action="{{ url_for('post_review')}}">
+                        <div class="row align-items-start" >
+                        <div class="col-5">
+                            Star Rating: 
+                        </div>
+                        <div class="col-7">
+                            <div class="row align-items-start" style="padding-right: 5px;">
+                            <select name="star" id="star">
+                            <option value="1">★✩✩✩✩</option>
+                            <option value="2">★★✩✩✩</option>
+                            <option value="3">★★★✩✩</option>
+                            <option value="4">★★★★✩</option>
+                            <option value="5">★★★★★</option>
+                            </select>  
+                            </div>
+                            </div>
+                        </div>
+                        <div class="row align-items-start" style="padding: 5px;">
+                       
+                            <textarea type="text" id="reviewText" name="reviewText"></textarea>
+                            <input hidden name="SpotId" value= "{{doc['_id']}}"/>
+                        </div>
+                        <div class="row align-items-start" style="padding-left: 5px;padding-right: 5px;">   
 
-</div>
-Reviews: 
+                            <input type="submit" name="create-btn" value="Post" />
+                        </div>
+                        </form>
+                </div>
+            </div>
+        
+        </div>
+        <br/>
+        &nbsp;&nbsp;Reviews: 
+        {% for review in reviews %}
+        
+        <div class="container border bg-light" style="--bs-bg-opacity: .6; border-radius: 5px;">
+            <div class="row align-items-start">
+                <div class="col" style="color:orange"">
+                {{reviewStar[loop.index0]}}
+                </div>
+            </div>
+            <div class="row align-items-start">
+                <div class="col">
+                {{review.text}}
+                </div>
+            </div>
+            <div class="row align-items-end">
+                <div class="col text-right">
+                <strong>By {{review.user}}</strong> 
+                </div>
+            </div>
+        
+            {% if reviewLikeStatus[loop.index0] == 0 %}
+            <div class="row align-items-start">
+                <div class="col-3">
+                    <form action="{{ url_for('like_review')}}" method="post">
+                        <input hidden name="reviewId" value= "{{review['_id']}}"/>
+                        <button class="btn btn-outline-dark btn-sm" name="like" value="like">👍</button> {{reviewLike[loop.index0]}}
+                </div>
+                <div class="col-3">
+                        <button class="btn btn-outline-dark btn-sm" name="like" value="dislike">👎</button> {{reviewDislike[loop.index0]}}
+                    </form>       
+                </div>
+            </div>
+            {% elif reviewLikeStatus[loop.index0] == 1 %}
+            <div class="row align-items-start">
+                <div class="col-3">
+                    <form action="{{ url_for('like_review')}}" method="post">
+                        <input hidden name="reviewId" value= "{{review['_id']}}"/>
+                        <button class="btn btn-dark btn-sm" disabled aria-pressed="true" name="like" value="like">👍</button> {{reviewLike[loop.index0]}}
+                </div>
+                <div class="col-3">
+                        <button class="btn btn-outline-dark btn-sm" disabled name="like" value="dislike">👎</button> {{reviewDislike[loop.index0]}}
+                    </form>       
+                </div>
+            </div>
+            {% elif reviewLikeStatus[loop.index0] == 2 %}
+            <div class="row align-items-start">
+                <div class="col-3">
+                    <form action="{{ url_for('like_review')}}" method="post">
+                        <input hidden name="reviewId" value= "{{review['_id']}}"/>
+                        <button class="btn btn-outline-dark btn-sm" disabled aria-pressed="true" name="like" value="like">👍</button> {{reviewLike[loop.index0]}}
+                </div>
+                <div class="col-3">
+                        <button class="btn btn-dark btn-sm" disabled name="like" value="dislike">👎</button> {{reviewDislike[loop.index0]}}
+                    </form>       
+                </div>
+            </div>
+            {% endif %}
+        
+        </div>
+        {%endfor%}
+        <br/>
+        </body>
 
-{% for review in reviews %}
 
-<div class="container text-left border">
-    <div class="row align-items-start">
-        <div class="col">
-        {{reviewStar[loop.index0]}}
-        </div>
-    </div>
-    <div class="row align-items-start">
-        <div class="col">
-        <strong>{{review.user}}</strong> {{review.text}}
-        </div>
-    </div>
-
-    {% if reviewLikeStatus[loop.index0] == 0 %}
-    <div class="row align-items-start">
-        <div class="col-3">
-            <form action="{{ url_for('like_review')}}" method="post">
-                <input hidden name="reviewId" value= "{{review['_id']}}"/>
-                <button class="btn btn-outline-dark btn-sm" name="like" value="like">👍</button> {{reviewLike[loop.index0]}}
-        </div>
-        <div class="col-3">
-                <button class="btn btn-outline-dark btn-sm" name="like" value="dislike">👎</button> {{reviewDislike[loop.index0]}}
-            </form>       
-        </div>
-    </div>
-    {% elif reviewLikeStatus[loop.index0] == 1 %}
-    <div class="row align-items-start">
-        <div class="col-3">
-            <form action="{{ url_for('like_review')}}" method="post">
-                <input hidden name="reviewId" value= "{{review['_id']}}"/>
-                <button class="btn btn-dark btn-sm" disabled aria-pressed="true" name="like" value="like">👍</button> {{reviewLike[loop.index0]}}
-        </div>
-        <div class="col-3">
-                <button class="btn btn-outline-dark btn-sm" disabled name="like" value="dislike">👎</button> {{reviewDislike[loop.index0]}}
-            </form>       
-        </div>
-    </div>
-    {% elif reviewLikeStatus[loop.index0] == 2 %}
-    <div class="row align-items-start">
-        <div class="col-3">
-            <form action="{{ url_for('like_review')}}" method="post">
-                <input hidden name="reviewId" value= "{{review['_id']}}"/>
-                <button class="btn btn-outline-dark btn-sm" disabled aria-pressed="true" name="like" value="like">👍</button> {{reviewLike[loop.index0]}}
-        </div>
-        <div class="col-3">
-                <button class="btn btn-dark btn-sm" disabled name="like" value="dislike">👎</button> {{reviewDislike[loop.index0]}}
-            </form>       
-        </div>
-    </div>
-    {% endif %}
-
-</div>
-{%endfor%}
-<br/>
 {% endblock %}
+
