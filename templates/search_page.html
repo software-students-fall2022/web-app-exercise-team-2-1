@@ -9,7 +9,7 @@
     <script src="https://kit.fontawesome.com/126efe61ad.js" crossorigin="anonymous"></script>
   </head>
   <body>
-    <!-- <div class="container"> -->
+    <div class="container">
       <form method="POST" action="{{ url_for('search')}}">
         <i class="fa-solid fa-magnifying-glass"></i>
         <input type="text" id = "fspotname" name = "fspotname" placeholder="Enter keyword">
@@ -24,13 +24,29 @@
         Type:
         <select name="ftype" id="ftype" value="">
           <option value=""></option>
-          <option value="---">---</option>
           <option value="Academic building">Academic Building</option>
           <option value="Cafe/Restaurant">Cafe/Restaurant</option>
           <option value="Library">Library</option>
           <option value="Non-restaurant store">Non-Restaurant Store</option>
           <option value="Miscellaneous">Miscellaneous</option>
         </select>
+        <div class="break"></div>
+        Requires Purchase:
+        <select name="fpurchase" id="fpurchase" value="">
+          <option value=""></option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+        <div class="break"></div>
+        Noise Level:
+        <select name="fnoise" id="fnoise" value="">
+          <option value=""></option>
+          <option value="Silent">Silent</option>
+          <option value="Quiet">Quiet</option>
+          <option value="Conversational">Conversational</option>
+          <option value="Loud">Loud</option>
+        </select>
+        <div class="break"></div>
         <button type="submit">Search</button>
       </form>
     </div>
