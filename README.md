@@ -13,4 +13,4 @@ View all user stories [here](https://github.com/software-students-fall2022/web-a
 
 ## Task boards
 
-View task boards [here](https://github.com/orgs/software-students-fall2022/projects/5).
+View task boards [here](https://github.com/software-students-fall2022/web-app-exercise-team-2-1/projects?query=is%3Aopen).

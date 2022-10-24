@@ -1,68 +1,56 @@
 {% extends "wrapper.html" %}
 {% block container %}
-
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>App Name Here</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='css/wrapper.css') }}"
-    />
-  </head>
-  <body>
-    <div class="container">
-      <header>
-        <h2>Add a new study spot:</h2>
-      </header>
-      <main>
-        <form method="POST" action="{{ url_for('create_post')}}">
-          <p class="field">Name/Title for the study spot: <input type="text" id="fitem" name="fitem" /><br /></p>
-          <p>Address: <input type="text" id="faddress" name="faddress" /><br /></p>
-          <p>Location:
-            <select name="flocation" id="flocation">
-              <option value="On campus">On Campus</option>
-              <option value="Off campus">Off Campus</option>
-            </select>
-            <br />
-          </p>
-          <p>Study Spot Type:
-            <select name="ftype" id="ftype">
-              <option value="Academic building">Academic Building</option>
-              <option value="Cafe/Restaurant">Cafe/Restaurant</option>
-              <option value="Library">Library</option>
-              <option value="Non-restaurant store">Non-Restaurant Store</option>
-              <option value="Miscellaneous">Miscellaneous</option>
-            </select>
-            <br />
-          </p>
-          <p>Requires Purchase:
-            <select name="fpurchase" id="fpurchase">
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
-            <br />
-          </p>
-          <p>Noise Level:
-            <select name="fnoise" id="fnoise">
-              <option value="Silent">Silent</option>
-              <option value="Quiet">Quiet</option>
-              <option value="Conversational">Conversational</option>
-              <option value="Loud">Loud</option>
-            </select>
-            <br />
-          </p>
-          <p>
-            Description/Notes:<br />
-            <textarea type="text" id="fdescription" name="fdescription"></textarea>
-          </p>
-          <p>
-            <a href="{{ url_for('home')}}">Cancel</a>
-            <input type="submit" name="create-btn" value="Post" />
-          </p>
-        </form>
-      </main>
-    </div>
-  </body>
-</html>
+<div class="container">
+  <header>
+    <h2>Add a new study spot:</h2>
+  </header>
+  <main>
+    <form method="POST" action="{{ url_for('add_spot')}}" enctype="multipart/form-data">
+      <p class="field">Name/Title for the study spot: <input type="text" id="fitem" name="fitem" /><br /></p>
+      <p class="field">Image: <input type="file" name="fimage"></p>
+      <p>Address: <input type="text" id="faddress" name="faddress" /><br /></p>
+      <p>Location:
+        <select name="flocation" id="flocation">
+          <option value="On campus">On Campus</option>
+          <option value="Off campus">Off Campus</option>
+        </select>
+        <br />
+      </p>
+      <p>Study Spot Type:
+        <select name="ftype" id="ftype">
+          <option value="Academic building">Academic Building</option>
+          <option value="Cafe/Restaurant">Cafe/Restaurant</option>
+          <option value="Library">Library</option>
+          <option value="Non-restaurant store">Non-Restaurant Store</option>
+          <option value="Miscellaneous">Miscellaneous</option>
+        </select>
+        <br />
+      </p>
+      <p>Requires Purchase:
+        <select name="fpurchase" id="fpurchase">
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+        <br />
+      </p>
+      <p>Noise Level:
+        <select name="fnoise" id="fnoise">
+          <option value="Silent">Silent</option>
+          <option value="Quiet">Quiet</option>
+          <option value="Conversational">Conversational</option>
+          <option value="Loud">Loud</option>
+        </select>
+        <br />
+      </p>
+      <p>
+        Description/Notes:<br />
+        <textarea type="text" id="fdescription" name="fdescription"></textarea>
+      </p>
+      <p>
+        <a href="{{ url_for('home')}}">Cancel</a>
+        <input type="submit" name="create-btn" value="Post" />
+      </p>
+    </form>
+  </main>
+</div>
 {% endblock %}

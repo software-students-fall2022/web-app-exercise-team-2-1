@@ -29,7 +29,8 @@ footer {
 }
 
 main {
-  margin-top: 12rem;
+  margin-top: 8rem;
+  margin-bottom: 3.5rem;
 }
 
 /* Layout Template */
@@ -85,19 +86,20 @@ nav {
 
 .bottom-nav-icon {
   flex-grow: 1;
-  padding: 2rem 5rem;
+  padding: 1rem 2.5rem;
   text-align: center;
 }
 
 .bottom-nav-icon:not(:first-child) {
-  border-left: 3px solid rgba(0, 0, 0, .7);
+  border-left: 2px solid rgba(0, 0, 0, .7);
 }
 
 .nav-icon {
-  font-size: 5rem !important;
+  font-size: 2rem !important;
 }
 
 /* Typography */
 h1 {
-  font-size: 3.5rem;
+  font-size: 1.8rem;
+  font-family: sans-serif;
 }
