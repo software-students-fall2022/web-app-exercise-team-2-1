@@ -320,6 +320,7 @@ def add_spot():
     
     # create a new document with the data the user entered
     doc = {
+        "added_by": flask_login.current_user.data["username"],
         "name": name,
         "image": filename,
         "address": address, 
