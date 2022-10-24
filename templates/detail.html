@@ -95,19 +95,46 @@ Reviews:
         <strong>{{review.user}}</strong> {{review.text}}
         </div>
     </div>
+
+    {% if reviewLikeStatus[loop.index0] == 0 %}
     <div class="row align-items-start">
         <div class="col-3">
             <form action="{{ url_for('like_review')}}" method="post">
                 <input hidden name="reviewId" value= "{{review['_id']}}"/>
-                <button class = "border border-1" name="like" value="like">👍</button> {{review.like}}
+                <button class="btn btn-outline-dark btn-sm" name="like" value="like">👍</button> {{reviewLike[loop.index0]}}
         </div>
         <div class="col-3">
-                <button class = "border border-1" name="like" value="dislike">👎</button> {{review.dislike}}
+                <button class="btn btn-outline-dark btn-sm" name="like" value="dislike">👎</button> {{reviewDislike[loop.index0]}}
             </form>       
         </div>
     </div>
-</div>
+    {% elif reviewLikeStatus[loop.index0] == 1 %}
+    <div class="row align-items-start">
+        <div class="col-3">
+            <form action="{{ url_for('like_review')}}" method="post">
+                <input hidden name="reviewId" value= "{{review['_id']}}"/>
+                <button class="btn btn-dark btn-sm" disabled aria-pressed="true" name="like" value="like">👍</button> {{reviewLike[loop.index0]}}
+        </div>
+        <div class="col-3">
+                <button class="btn btn-outline-dark btn-sm" disabled name="like" value="dislike">👎</button> {{reviewDislike[loop.index0]}}
+            </form>       
+        </div>
+    </div>
+    {% elif reviewLikeStatus[loop.index0] == 2 %}
+    <div class="row align-items-start">
+        <div class="col-3">
+            <form action="{{ url_for('like_review')}}" method="post">
+                <input hidden name="reviewId" value= "{{review['_id']}}"/>
+                <button class="btn btn-outline-dark btn-sm" disabled aria-pressed="true" name="like" value="like">👍</button> {{reviewLike[loop.index0]}}
+        </div>
+        <div class="col-3">
+                <button class="btn btn-dark btn-sm" disabled name="like" value="dislike">👎</button> {{reviewDislike[loop.index0]}}
+            </form>       
+        </div>
+    </div>
+    {% endif %}
 
+</div>
 {%endfor%}
 <br/>
 {% endblock %}
