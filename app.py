@@ -343,7 +343,7 @@ def add_spot():
 def edit_s(mongoid):
     # Route for the add study spot page
     doc = db.spots.find_one({"_id": ObjectId(mongoid)})
-    return render_template('edit_spot.html', mongoid=mongoid, doc=doc)
+    return render_template('edit_spot.html', mongoid=mongoid, doc=doc, title="Edit Spot")
 
 @app.route('/edit/<mongoid>', methods = ['POST'])
 @flask_login.login_required
