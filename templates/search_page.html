@@ -14,24 +14,24 @@
       <form method="POST" action="{{ url_for('search')}}">
         <i class="fa-solid fa-magnifying-glass"></i>
         <input type="text" id = "fspotname" name = "fspotname" placeholder="Enter keyword">
-        <div class="break"></div>
+        <!-- <div class="break"></div>
         Location:
         <select name="flocation" id="flocation" value="">
           <option value=""></option>
           <option value="On campus">On Campus</option>
           <option value="Off campus">Off Campus</option>
         </select>
-        <div class="break"></div>
-        Type:
+        <div class="break"></div> -->
+        <!-- Type: -->
         <select name="ftype" id="ftype" value="">
-          <option value=""></option>
+          <option value="---">----</option>
           <option value="Academic building">Academic Building</option>
           <option value="Cafe/Restaurant">Cafe/Restaurant</option>
           <option value="Library">Library</option>
           <option value="Non-restaurant store">Non-Restaurant Store</option>
           <option value="Miscellaneous">Miscellaneous</option>
         </select>
-        <div class="break"></div>
+        <!-- <div class="break"></div>
         Requires Purchase:
         <select name="fpurchase" id="fpurchase" value="">
           <option value=""></option>
@@ -47,7 +47,7 @@
           <option value="Conversational">Conversational</option>
           <option value="Loud">Loud</option>
         </select>
-        <div class="break"></div>
+        <div class="break"></div> -->
         <button type="submit">Search</button>
       </form>
     </div>

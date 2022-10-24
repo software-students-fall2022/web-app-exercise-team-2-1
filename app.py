@@ -124,7 +124,7 @@ def authenticate():
 
 @app.route('/home')
 def home():
-    docs = db.spots.find({}).sort("created_at", -1)
+    docs = db.spots.find().sort("created_at", -1)
     current_user = flask_login.current_user
     if current_user.data["is_moderator"]:
         return render_template('moderator_home.html', docs = docs) 
@@ -421,45 +421,46 @@ def search():
 @flask_login.login_required
 def search_spots():
     name = request.form['fspotname']
-    location = request.form['flocation']
+    # location = request.form['flocation']
     type = request.form['ftype']
-    purchase_info = False
-    if request.form['fpurchase'] == 'Yes':
-        purchase_info = True
-    noise_level = request.form['fnoise']
+    # purchase_info = False
+    # if request.form['fpurchase'] == 'Yes':
+    #     purchase_info = True
+    # noise_level = request.form['fnoise']
 
-    # if type == "---" and name != "":
-    #     docs = db.spots.find({"name": name}).sort("created_at", -1) 
-    # else:
-    #     if type != "---" and name == "":
-    #         docs = db.spots.find({"type": type}).sort("created_at", -1)
-    #     elif type != "---" and name != "":
-    #         docs = db.spots.find({"name": name, "type": type}).sort("created_at", -1)
-    #     else:
-    #         docs = db.spots.find()
+    if type == "---" and name != "":
+        docs = db.spots.find({"name": name}).sort("created_at", -1) 
+    else:
+        if type != "---" and name == "":
+            docs = db.spots.find({"type": type}).sort("created_at", -1)
+        elif type != "---" and name != "":
+            docs = db.spots.find({"name": name, "type": type}).sort("created_at", -1)
+        else:
+            docs = db.spots.find()
 
-    query = dict()
+    # query = dict()
 
-    if name != "":
-        query["name"] = name
+    # # if name != "":
+    # query["name"] = name
     
-    if location != "":
-        query["location"] = location
+    # if location != "":
+    #     query["location"] = location
 
-    if type != "":
-        query["type"] = type
+    # if type != "":
+    #     query["type"] = type
     
-    if purchase_info != "":
-        query["purchase_info"] = purchase_info
+    # if purchase_info != "":
+    #     query["purchase_info"] = purchase_info
     
-    if noise_level != "":
-        query["noise_level"] = noise_level
+    # if noise_level != "":
+    #     query["noise_level"] = noise_level
 
-    docs = db.spots.find(query).sort("created_at", -1)
-    print(query)
+    # docs = db.spots.find({"name": name}).sort("created_at", -1)
+    # print(query)
+    # print(list(docs))
 
     
-    return render_template("home.html", docs = docs) # pass the list of search results as an argument to the home page for displaying 
+    return render_template('home.html', docs=docs) # pass the list of search results as an argument to the home page for displaying 
 
 
 # route to handle the submission of the login form
