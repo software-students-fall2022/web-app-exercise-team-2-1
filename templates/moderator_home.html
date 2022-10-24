@@ -8,7 +8,7 @@
     <div class="spot-grid-container">
         {% for doc in docs %}
             <div class="spot-card">
-                <a href="{{ url_for('moderator_detail', SpotId = doc['_id'])}}"> | <a href="{{ url_for('edit_s',mongoid=doc._id)}}">Edit Spot</a> 
+                <a href="{{ url_for('moderator_detail', SpotId = doc['_id'])}}">
                     <!-- This is also a placeholder until backend implementation -->
                     {% if doc.image and doc.image != '' %}
                     <img class="spot-card-image" src="/static/images/uploads/{{doc.image}}"/>
@@ -19,6 +19,7 @@
                         <input hidden name="SpotId" value= "{{doc['_id']}}"/>
                         <button class = "border border-1" name="delete" value="delete"><span class="material-symbols-outlined location-icon">delete</span></button>
                     </form>   
+                    <a href="{{ url_for('edit_s',mongoid=doc._id)}}">Edit Spot</a> 
                     <div class="study-card-name">{{doc.name}}</div>
                     <div class="study-spot-location"><span class="material-symbols-outlined location-icon">location_on</span>{{doc.location}}</div>
                 </a>
