@@ -107,8 +107,6 @@ def inject_user():
     return dict(user=flask_login.current_user)
 
 
-moderator_mode = False
-
 valid_locations = {'On campus', 'Off campus'}
 valid_types = {'Academic building', 'Cafe/Restaurant', 'Library', 'Non-restaurant store', 'Miscellaneous'}
 valid_noise_levels = {'Silent', 'Quiet', 'Conversational', 'Loud'}
@@ -169,9 +167,9 @@ def moderator_detail():
     purchase = doc["purchase_info"]
     reviewIds = doc["reviewId"]
     if purchase:
-        purchase = "No Purchase Required"
-    else:
         purchase = "Purchase Required"
+    else:
+        purchase = "No Purchase Required"
     
     spotStar = printStar(doc["star"])
     reviewTemp = db.reviews.find({ "_id": { '$in': reviewIds }}).sort("like", -1)
@@ -220,12 +218,25 @@ def detail():
     
     #.sort("star", -1).sort("created_at",-1).sort("like", -1)
     reviewStar = []
+    reviewLike = []
+    reviewDislike = []
+    reviewLikeStatus = []
+
     for review in reviewTemp:
         reviewStar.append(printStar(review["star"]))
+        reviewLike.append(len(review["like"]))
+        reviewDislike.append(len(review["dislike"]))
+        if(flask_login.current_user.data["username"] in review["like"]):
+            reviewLikeStatus.append(1)
+        elif(flask_login.current_user.data["username"] in review["dislike"]):
+            reviewLikeStatus.append(2)
+        else:
+            reviewLikeStatus.append(0)
     
     reviews = db.reviews.find({ "_id": { '$in': reviewIds } }).sort("like", -1)
     
-    return render_template('detail.html', doc = doc, purchase = purchase, reviews = reviews, reviewStar = reviewStar, spotStar = spotStar, title = doc["name"]) 
+    return render_template('detail.html', doc = doc, purchase = purchase, 
+    reviews = reviews, reviewStar = reviewStar, spotStar = spotStar, title = doc["name"],reviewDislike = reviewDislike,reviewLike = reviewLike, reviewLikeStatus = reviewLikeStatus) 
 
 @app.route('/detail/like', methods = ['POST'])
 @flask_login.login_required
@@ -233,14 +244,14 @@ def like_review():
 
     reviewId  = request.form['reviewId']
     like = request.form['like']
-    addlike = 0
-    addDislike = 0
-    if like == "like":
-        addlike = 1
-    elif like == "dislike":
-        addDislike = 1
+
     review = db.reviews.find_one({"_id": ObjectId(reviewId)})
-    db.reviews.update_one({"_id": ObjectId(reviewId)}, { '$inc': { "like": addlike, "dislike": addDislike}})
+    if (not flask_login.current_user.data["username"] in review["like"] and not flask_login.current_user.data["username"] in review["dislike"]):
+        if (like == "like"):
+            db.reviews.update_one({"_id": ObjectId(reviewId)}, { '$push': { "like": flask_login.current_user.data["username"]}})
+        elif like == "dislike":
+            db.reviews.update_one({"_id": ObjectId(reviewId)}, { '$push': { "dislike": flask_login.current_user.data["username"]}})
+
     return redirect(url_for('detail', SpotId = review["spot"]))
 
 @app.route('/detail/post', methods = ['POST'])
@@ -255,8 +266,8 @@ def post_review():
         "star" : star,
         "text" : reviewText,
         "spot" : spotId,
-        "like" : 0,
-        "dislike" : 0,
+        "like" : [],
+        "dislike" : [],
         "created_at": datetime.datetime.utcnow(),
         "user": flask_login.current_user.data["username"]
         }
