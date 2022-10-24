@@ -274,7 +274,7 @@ def post_review():
 @flask_login.login_required
 def create_post():
     # Route for the add study spot page
-    return render_template('add_spot.html')  # render the add study spot template
+    return render_template('add_spot.html', title='Create Study Spot')  # render the add study spot template
 
 
 # route to handle adding new spots to the database

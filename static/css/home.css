@@ -22,6 +22,7 @@
     padding: 1rem 1.5rem;
     border-radius: 15px;
     box-shadow: 0 0 2rem rgb(0 0 0 / 10%);
+    background: #fff;
 }
 
 .spot-card > a, .spot-card > a:hover, .spot-card > a:active { 
