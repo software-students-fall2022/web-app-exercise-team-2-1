@@ -1,7 +1,11 @@
-
+h1
+{
+  font-family: "Abel";
+}
 body {
   margin: 10;
   /* border: 10px solid; */
+  background: #d7bfdc;
 }
   
 header,
@@ -11,7 +15,7 @@ main {
   /* border: 10px solid; */
 }
 
-header,
+header
 main {
   margin-bottom: 5px;
 }
@@ -41,13 +45,14 @@ nav {
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #fff;
+  background-color: rgb(29, 5, 29);
+  color: white;
   border-bottom: solid #EBEBEB 1px;
   box-shadow: 0 0 2rem rgb(0 0 0 / 10%);
 }
 
 .nav-link, .nav-link:hover, .nav-link:active, .bottom-nav-icon, .bottom-nav-icon:hover, .bottom-nav-icon:active {
-  color: #000;
+  color: white;
   text-decoration: none;
 }
 
@@ -72,8 +77,8 @@ nav {
   bottom: 0;
   left: 0;
   width: 100%;
-  background-color: #fff;
-  border-top: solid #EBEBEB 1px;
+  background-color: rgb(29, 5, 29);
+  border-top: solid rgb(29, 5, 29) 1px;
   box-shadow: 0 0 2rem rgb(0 0 0 / 10%);
 }
 

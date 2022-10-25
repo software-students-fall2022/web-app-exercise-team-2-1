@@ -3,6 +3,7 @@
 {% block container %}
 <!-- These are placeholder links for now until backend implementation -->
 <link rel="stylesheet" href="../static/css/home.css"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abel">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 <div class="home-container">
     <div class="spot-grid-container">
@@ -10,11 +11,16 @@
             <div class="spot-card">
                 <a href="{{ url_for('moderator_detail', SpotId = doc['_id'])}}">
                     <!-- This is also a placeholder until backend implementation -->
+                    {% if doc.image and doc.image != '' %}
+                    <img class="spot-card-image" src="/static/images/uploads/{{doc.image}}"/>
+                    {% else %}
                     <img class="spot-card-image" src="/static/images/study-spot-800.jpeg"/>
+                    {% endif %}
                     <form action="{{ url_for('delete_spot')}}" method="post">
                         <input hidden name="SpotId" value= "{{doc['_id']}}"/>
                         <button class = "border border-1" name="delete" value="delete"><span class="material-symbols-outlined location-icon">delete</span></button>
                     </form>   
+                    <a href="{{ url_for('edit_s',mongoid=doc._id)}}">Edit Spot</a> 
                     <div class="study-card-name">{{doc.name}}</div>
                     <div class="study-spot-location"><span class="material-symbols-outlined location-icon">location_on</span>{{doc.location}}</div>
                 </a>
