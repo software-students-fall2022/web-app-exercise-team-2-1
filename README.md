@@ -14,3 +14,10 @@ View all user stories [here](https://github.com/software-students-fall2022/web-a
 ## Task boards
 
 View task boards [here](https://github.com/software-students-fall2022/web-app-exercise-team-2-1/projects?query=is%3Aopen).
+
+## Members
+
+Charlie Xiang [Github](https://github.com/xiang-charlie)
+Michael Ma [Github](https://github.com/mma01us)
+Robert Chen [Github](https://github.com/RobertChenYF)
+Sarah Al-Towaity [Github](https://github.com/sarah-altowaity1)
