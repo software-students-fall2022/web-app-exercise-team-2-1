@@ -17,7 +17,7 @@ View task boards [here](https://github.com/software-students-fall2022/web-app-ex
 
 ## Members
 
-Charlie Xiang [Github](https://github.com/xiang-charlie)
-Michael Ma [Github](https://github.com/mma01us)
-Robert Chen [Github](https://github.com/RobertChenYF)
+Charlie Xiang [Github](https://github.com/xiang-charlie) <br>
+Michael Ma [Github](https://github.com/mma01us) <br>
+Robert Chen [Github](https://github.com/RobertChenYF) <br>
 Sarah Al-Towaity [Github](https://github.com/sarah-altowaity1)
