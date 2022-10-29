@@ -91,3 +91,12 @@ pip3 install -r requirements.txt
 ```bash
 flask run
 ```
+
+### Enter Credentials 
+Upo loading up the mobile appilcation, a log in/sign up page will appear, prompting the user to enter a username and password. If the user is a moderator, inputting the string "moderator" for both the username and password should load up different screens with slightly different functionalities than those designed for regular users. Incorrect log in involves either the username or password being incorrect or the user not having signed up previously. In these cases, an error messasge will be displayed to notify the user of improper log in. Incorrect sign up involves an account already existing with that same username, upon which, again, a message will be displayed to the user. Upon successful sign up, you are directed to the home page with a listing of the study spots currently in the database. You can always log out by clicking on the log out button on the upper right corner of the page.
+
+#### Moderator Pages
+As a moderator, you will be able to delete study spots by clicking on the delete icon next to the study spot image. You can also edit the spot by clicking on the "Edit Spot" button and update the fields. You can also delete reviews when clicking on a specific study spot, loading up a special "moderator"-formatted screen to view the study spot listing and the reviews. As a moderator, you can also search spots and add spots, if desired.
+
+#### Regualar User Page
+As a general user, you can add study spot by clicking on the plus icon on the bottom bar, search spots, either by type or name, and add reviews to preexisting spots. You can also like/dislike other people's reviews. 
