@@ -1,0 +1,52 @@
+{% extends "wrapper.html" %}
+{% block container %}
+<link rel="stylesheet" href="../static/css/add_spot.css"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Abel">
+<div class="form-container">
+  <h2>Add a new study spot:</h2>
+  <form method="POST" action="{{ url_for('add_spot')}}" enctype="multipart/form-data">
+    <p>Name/Title for the study spot: <input type="text" id="fitem" name="fitem" /><br /></p>
+    <p>Image: <input type="file" name="fimage"></p>
+    <p>Address: <input type="text" id="faddress" name="faddress" /><br /></p>
+    <p>Location:
+      <select name="flocation" id="flocation">
+        <option value="On campus">On Campus</option>
+        <option value="Off campus">Off Campus</option>
+      </select>
+      <br />
+    </p>
+    <p>Study Spot Type:
+      <select name="ftype" id="ftype">
+        <option value="Academic building">Academic Building</option>
+        <option value="Cafe/Restaurant">Cafe/Restaurant</option>
+        <option value="Library">Library</option>
+        <option value="Non-restaurant store">Non-Restaurant Store</option>
+        <option value="Miscellaneous">Miscellaneous</option>
+      </select>
+      <br />
+    </p>
+    <p>Requires Purchase:
+      <select name="fpurchase" id="fpurchase">
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+      <br />
+    </p>
+    <p>Noise Level:
+      <select name="fnoise" id="fnoise">
+        <option value="Silent">Silent</option>
+        <option value="Quiet">Quiet</option>
+        <option value="Conversational">Conversational</option>
+        <option value="Loud">Loud</option>
+      </select>
+      <br />
+    </p>
+    <p>
+      Description/Notes:<br />
+      <textarea type="text" id="fdescription" name="fdescription"></textarea>
+    </p>
+    <input type="submit" name="create-btn" value="Post" />
+  </form>
+  <a class="cancel-btn" href="{{ url_for('home')}}">Cancel</a>
+</div>
+{% endblock %}

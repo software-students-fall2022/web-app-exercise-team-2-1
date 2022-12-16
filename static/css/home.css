@@ -1,0 +1,76 @@
+.home-container {
+    width: 95%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 2rem;
+}
+
+.spot-grid-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    row-gap: 1.5rem;
+}
+
+.card-placeholder {
+    width: 150px;
+    height: 0;
+}
+
+.spot-card {
+    padding: 1rem 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 0 2rem rgb(0 0 0 / 10%);
+    background: #fff;
+}
+
+.spot-card > a, .spot-card > a:hover, .spot-card > a:active { 
+    color: #000;
+    text-decoration: none;
+}
+
+.image-container {
+    position: relative;
+    width: 100%;
+    max-width: 150px;
+}
+
+.image-container > a {
+    position: absolute;
+    top: 0%;
+    right: 0%;
+    transform: translate(-5%, 25%);
+    background-color: #ff0000;
+    color: #fff;
+    font-size: 16px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+  }
+
+.spot-card-image {
+    object-fit: cover;
+    width: 100px;
+    height: 100px;
+    margin: .5rem 0;
+}
+
+.study-card-name, .study-spot-location {
+    font-size: .9rem;
+    font-family: sans-serif;
+    width: 100px;
+    font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.study-spot-location {
+    font-size: .8rem;
+    font-weight: normal;
+}
+
+.location-icon{
+    font-size: .7rem !important;
+}
